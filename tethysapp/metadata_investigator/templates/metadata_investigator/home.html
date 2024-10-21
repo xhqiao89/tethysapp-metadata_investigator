@@ -1,0 +1,50 @@
+{% extends "metadata_investigator/base.html" %}
+{% load tethys_gizmos %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Help">
+    <a data-bs-toggle="modal" data-bs-target="#help-modal"><i class="bi bi-question-circle"></i></a>
+  </div>
+{% endblock %}
+
+{% block app_navigation_items %}
+<div>
+  <br>
+  <p>Create from scratch, or select a local metadata file: </p>
+  <br><input type="file" id="load-from-local"></br>
+</div>
+<div id="view-tabs">
+  <div id="file-identify">
+    <h1>Identification</h1>
+    <div id="file-identify"></div>
+  </div>
+  <div id="data-quality">
+    <h1>Data Quality</h1>
+    <div id="data-quality"></div>
+  </div>
+  <div id="spatial_coverage">
+    <h1>Spatial Coverage</h1>
+    <div id="spatial_coverage"></div>
+  </div>
+  <div id="data-contact">
+    <h1>Contact</h1>
+    <div id="data-contact"></div>
+  </div>
+</div> 
+
+{% endblock %}
+
+{% block app_content %}
+  <p>Welcome to Metadata Investigator, designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. With a user-friendly interface, you can quickly generate S-100-compliant metadata, ensuring your data meets the required standards for marine geospatial information. Our app automatically checks your files for any issues, helping you correct errors and maintain high-quality, standardized metadata. Whether you're a hydrographer, GIS professional, or data provider, our tool makes S-100 compliance fast, simple, and efficient.</p>
+     
+
+  
+{% endblock %}
+
+{% block app_actions %}
+  {% gizmo save_button %}
+  {% gizmo edit_button %}
+  {% gizmo remove_button %}
+  {% gizmo previous_button %}
+  {% gizmo next_button %}
+{% endblock %}
