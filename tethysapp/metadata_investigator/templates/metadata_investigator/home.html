@@ -11,34 +11,61 @@
 <div>
   <br>
   <p>Create from scratch, or select a local metadata file: </p>
-  <br><input type="file" id="load-from-local"></br>
+  <form id="upload-form" action="{% url 'metadata_investigator:upload_file' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" id="load-from-local" name="file" accept=".xml,application/xml">
+    <button type="submit">Upload</button>
+  </form>
+
 </div>
 <div id="view-tabs">
-  <div id="file-identify">
-    <h1>Identification</h1>
-    <div id="file-identify"></div>
-  </div>
-  <div id="data-quality">
-    <h1>Data Quality</h1>
-    <div id="data-quality"></div>
-  </div>
-  <div id="spatial_coverage">
-    <h1>Spatial Coverage</h1>
-    <div id="spatial_coverage"></div>
-  </div>
-  <div id="data-contact">
-    <h1>Contact</h1>
-    <div id="data-contact"></div>
-  </div>
-</div> 
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <button class="nav-link active" id="identification-tab" data-bs-toggle="tab" data-bs-target="#file-identify-content" type="button">Identification</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="data-quality-tab" data-bs-toggle="tab" data-bs-target="#data-quality-content" type="button">Data Quality</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="spatial-coverage-tab" data-bs-toggle="tab" data-bs-target="#spatial-coverage-content" type="button">Spatial Coverage</button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#data-contact-content" type="button">Contact</button>
+    </li>
+  </ul>
+</div>
 
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="file-identify-content" role="tabpanel" aria-labelledby="identification-tab">
+    <!-- Identification content here -->
+  </div>
+  <div class="tab-pane fade" id="data-quality-content" role="tabpanel" aria-labelledby="data-quality-tab">
+    <!-- Data Quality content here -->
+  </div>
+  <div class="tab-pane fade" id="spatial-coverage-content" role="tabpanel" aria-labelledby="spatial-coverage-tab">
+    <!-- Spatial Coverage content here -->
+  </div>
+  <div class="tab-pane fade" id="data-contact-content" role="tabpanel" aria-labelledby="contact-tab">
+    <!-- Contact content here -->
+  </div>
+</div>
 {% endblock %}
+
 
 {% block app_content %}
   <p>Welcome to Metadata Investigator, designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. With a user-friendly interface, you can quickly generate S-100-compliant metadata, ensuring your data meets the required standards for marine geospatial information. Our app automatically checks your files for any issues, helping you correct errors and maintain high-quality, standardized metadata. Whether you're a hydrographer, GIS professional, or data provider, our tool makes S-100 compliance fast, simple, and efficient.</p>
-     
 
-  
+<h1>Welcome to Metadata Investigator</h1>
+  <p>This tool is designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. With a user-friendly interface, you can quickly generate S-100-compliant metadata, ensuring your data meets the required standards for marine geospatial information.</p>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+
+  {% if success %}
+    <div class="alert alert-success">{{ success }}</div>
+  {% endif %}
+
 {% endblock %}
 
 {% block app_actions %}
