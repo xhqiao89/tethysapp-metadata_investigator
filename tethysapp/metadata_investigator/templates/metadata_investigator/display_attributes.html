@@ -1,0 +1,186 @@
+{% extends "metadata_investigator/base.html" %}
+{% load tethys_gizmos %}
+
+{% block app_content %}
+  <h2 class="mb-4">Extracted Metadata Attributes</h2>
+  <form id="metadata-form">
+    {% csrf_token %}
+
+    <h3>General Metadata</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="metadataIdentifier">Metadata Identifier:</label>
+          <input type="text" id="metadataIdentifier" name="metadataIdentifier" value="{{ attributes.metadataIdentifier }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="parentMetadata">Parent Metadata:</label>
+          <input type="text" id="parentMetadata" name="parentMetadata" value="{{ attributes.parentMetadata }}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-4">Locale Information</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="language">Language:</label>
+          <input type="text" id="language" name="language" value="{{ attributes.language }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="characterEncoding">Character Encoding:</label>
+          <input type="text" id="characterEncoding" name="characterEncoding" value="{{ attributes.characterEncoding }}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-4">Date and Scope</h3>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="dateInfo">Date Info:</label>
+          <input type="text" id="dateInfo" name="dateInfo" value="{{ attributes.dateInfo }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="resourceScope">Resource Scope:</label>
+          <input type="text" id="resourceScope" name="resourceScope" value="{{ attributes.resourceScope }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="scopeName">Scope Name:</label>
+          <input type="text" id="scopeName" name="scopeName" value="{{ attributes.scopeName }}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-4">Identification Information</h3>
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" value="{{ attributes.title }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="abstract">Abstract:</label>
+      <textarea id="abstract" name="abstract" class="form-control" rows="3">{{ attributes.abstract }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="topicCategory">Topic Category:</label>
+      <input type="text" id="topicCategory" name="topicCategory" value="{{ attributes.topicCategory }}" class="form-control">
+    </div>
+
+    <h3 class="mt-4">Contact Information</h3>
+    {% for key, value in attributes.items %}
+      {% if key|slice:":8" == "contact_" %}
+        <div class="form-group">
+          <label for="{{ key }}">{{ key|cut:"_"|capfirst }}:</label>
+          <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}" class="form-control">
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <h3 class="mt-4">Geographic Extent</h3>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="geographicDescription">Geographic Description:</label>
+          <input type="text" id="geographicDescription" name="geographicDescription" value="{{ attributes.geographicDescription }}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="westBoundLongitude">West Bound Longitude:</label>
+          <input type="text" id="westBoundLongitude" name="westBoundLongitude" value="{{ attributes.westBoundLongitude }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="eastBoundLongitude">East Bound Longitude:</label>
+          <input type="text" id="eastBoundLongitude" name="eastBoundLongitude" value="{{ attributes.eastBoundLongitude }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="southBoundLatitude">South Bound Latitude:</label>
+          <input type="text" id="southBoundLatitude" name="southBoundLatitude" value="{{ attributes.southBoundLatitude }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="northBoundLatitude">North Bound Latitude:</label>
+          <input type="text" id="northBoundLatitude" name="northBoundLatitude" value="{{ attributes.northBoundLatitude }}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mt-4">Feature Catalogue Information</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fc_name">Name:</label>
+          <input type="text" id="fc_name" name="fc_name" value="{{ attributes.fc_name }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fc_scope">Scope:</label>
+          <input type="text" id="fc_scope" name="fc_scope" value="{{ attributes.fc_scope }}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fc_fieldOfApplication">Field of Application:</label>
+          <input type="text" id="fc_fieldOfApplication" name="fc_fieldOfApplication" value="{{ attributes.fc_fieldOfApplication }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="fc_versionNumber">Version Number:</label>
+          <input type="text" id="fc_versionNumber" name="fc_versionNumber" value="{{ attributes.fc_versionNumber }}" class="form-control">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fc_versionDate">Version Date:</label>
+          <input type="text" id="fc_versionDate" name="fc_versionDate" value="{{ attributes.fc_versionDate }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fc_productId">Product ID:</label>
+          <input type="text" id="fc_productId" name="fc_productId" value="{{ attributes.fc_productId }}" class="form-control">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label for="fc_classification">Classification:</label>
+          <input type="text" id="fc_classification" name="fc_classification" value="{{ attributes.fc_classification }}" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+  </form>
+
+  <h3 class="mt-5">Full JSON Data</h3>
+  <pre class="bg-light p-3 mt-2"><code>{{ full_json }}</code></pre>
+{% endblock %}
+
+{% block app_actions %}
+  {% if button_group %}
+    {% gizmo button_group %}
+  {% endif %}
+{% endblock %}
+
+
