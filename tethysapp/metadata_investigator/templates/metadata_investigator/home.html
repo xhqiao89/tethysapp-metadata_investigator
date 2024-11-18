@@ -1,5 +1,6 @@
 {% extends "metadata_investigator/base.html" %}
 {% load tethys_gizmos %}
+{% load static %}
 {% gizmo map_view %}
 {% block header_buttons %}
 <div class="header-button glyphicon-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Help">
@@ -202,4 +203,9 @@ document.addEventListener('DOMContentLoaded', function() {
 {% gizmo remove_button %}
 {% gizmo previous_button %}
 {% gizmo next_button %}
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="{% static 'metadata_investigator/js/main.js' %}" type="text/javascript"></script>
 {% endblock %}
