@@ -1,77 +1,205 @@
 {% extends "metadata_investigator/base.html" %}
 {% load tethys_gizmos %}
-
+{% gizmo map_view %}
 {% block header_buttons %}
-  <div class="header-button glyphicon-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Help">
-    <a data-bs-toggle="modal" data-bs-target="#help-modal"><i class="bi bi-question-circle"></i></a>
-  </div>
-{% endblock %}
-
-{% block app_navigation_items %}
-<div>
-  <br>
-  <p>Create from scratch, or select a local metadata file: </p>
-  <form id="upload-form" action="{% url 'metadata_investigator:upload_file' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="file" id="load-from-local" name="file" accept=".xml,application/xml">
-    <button type="submit">Upload</button>
-  </form>
-
-</div>
-<div id="view-tabs">
-  <ul class="nav flex-column">
-    <li class="nav-item">
-      <button class="nav-link active" id="identification-tab" data-bs-toggle="tab" data-bs-target="#file-identify-content" type="button">Identification</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="data-quality-tab" data-bs-toggle="tab" data-bs-target="#data-quality-content" type="button">Data Quality</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="spatial-coverage-tab" data-bs-toggle="tab" data-bs-target="#spatial-coverage-content" type="button">Spatial Coverage</button>
-    </li>
-    <li class="nav-item">
-      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#data-contact-content" type="button">Contact</button>
-    </li>
-  </ul>
-</div>
-
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="file-identify-content" role="tabpanel" aria-labelledby="identification-tab">
-    <!-- Identification content here -->
-  </div>
-  <div class="tab-pane fade" id="data-quality-content" role="tabpanel" aria-labelledby="data-quality-tab">
-    <!-- Data Quality content here -->
-  </div>
-  <div class="tab-pane fade" id="spatial-coverage-content" role="tabpanel" aria-labelledby="spatial-coverage-tab">
-    <!-- Spatial Coverage content here -->
-  </div>
-  <div class="tab-pane fade" id="data-contact-content" role="tabpanel" aria-labelledby="contact-tab">
-    <!-- Contact content here -->
-  </div>
+<div class="header-button glyphicon-button" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Help">
+  <a data-bs-toggle="modal" data-bs-target="#help-modal"><i class="bi bi-question-circle"></i></a>
 </div>
 {% endblock %}
-
 
 {% block app_content %}
-  <p>Welcome to Metadata Investigator, designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. With a user-friendly interface, you can quickly generate S-100-compliant metadata, ensuring your data meets the required standards for marine geospatial information. Our app automatically checks your files for any issues, helping you correct errors and maintain high-quality, standardized metadata. Whether you're a hydrographer, GIS professional, or data provider, our tool makes S-100 compliance fast, simple, and efficient.</p>
-
 <h1>Welcome to Metadata Investigator</h1>
-  <p>This tool is designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. With a user-friendly interface, you can quickly generate S-100-compliant metadata, ensuring your data meets the required standards for marine geospatial information.</p>
+<p>Welcome to Metadata Investigator, designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. Our tool makes S-100 compliance fast, simple, and efficient.</p>
 
-  {% if error %}
+{% if error %}
     <div class="alert alert-danger">{{ error }}</div>
-  {% endif %}
-
-  {% if success %}
+{% endif %}
+{% if success %}
     <div class="alert alert-success">{{ success }}</div>
-  {% endif %}
+{% endif %}
+
+<!-- Upload and Browse Section -->
+<div class="text-center mb-4">
+    <p style="font-weight: bold; font-size: 18px; color: #007BFF;">Create from scratch, or select a local metadata file:</p>
+    <form id="upload-form" action="{% url 'metadata_investigator:upload_file' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="load-from-local" name="file" accept=".xml,application/xml" class="form-control-file">
+        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+    </form>
+</div>
+
+<!-- Central Navigation -->
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link active" id="identification-tab" data-bs-toggle="tab" data-bs-target="#identification" type="button" role="tab" aria-controls="identification" aria-selected="true">Identification</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="data-quality-tab" data-bs-toggle="tab" data-bs-target="#data-quality" type="button" role="tab" aria-controls="data-quality" aria-selected="false">Data Quality</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="spatial-coverage-tab" data-bs-toggle="tab" data-bs-target="#spatial-coverage" type="button" role="tab" aria-controls="spatial-coverage" aria-selected="false">Spatial Coverage</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="identification" role="tabpanel" aria-labelledby="identification-tab">
+        <div class="container mt-4">
+            <form>
+                <div class="mb-3">
+                    <label for="metadataIdentifier" class="form-label">Metadata Identifier</label>
+                    <input type="text" class="form-control" id="metadataIdentifier" placeholder="Enter Metadata Identifier">
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" placeholder="Enter Title">
+                </div>
+                <div class="mb-3">
+                    <label for="abstract" class="form-label">Abstract</label>
+                    <textarea class="form-control" id="abstract" rows="3" placeholder="Enter Abstract"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="language" class="form-label">Language</label>
+                    <input type="text" class="form-control" id="language" placeholder="Enter Language">
+                </div>
+                <div class="mb-3">
+                    <label for="characterEncoding" class="form-label">Character Encoding</label>
+                    <input type="text" class="form-control" id="characterEncoding" placeholder="Enter Character Encoding">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="data-quality" role="tabpanel" aria-labelledby="data-quality-tab">
+        <div class="container mt-4">
+            <h2>Data Quality Details</h2>
+            <!-- Scope Section -->
+            <div class="mb-3">
+                <label for="scopeLevel" class="form-label">Scope Level</label>
+                <input type="text" class="form-control" id="scopeLevel" placeholder="Enter Scope Level" required>
+            </div>
+            <div class="mb-3">
+                <label for="scopeLevelDescription" class="form-label">Scope Level Description</label>
+                <textarea class="form-control" id="scopeLevelDescription" placeholder="Describe the Scope Level"></textarea>
+            </div>
+
+            <!-- Report Section -->
+            <h4>Reports</h4>
+            <!-- Dynamically add reports as needed -->
+            <div class="mb-3">
+                <label for="reportType" class="form-label">Report Type</label>
+                <input type="text" class="form-control" id="reportType" placeholder="Enter Report Type" required>
+            </div>
+            <div class="mb-3">
+                <label for="reportResult" class="form-label">Report Result</label>
+                <input type="text" class="form-control" id="reportResult" placeholder="Enter Report Result" required>
+            </div>
+
+            <!-- Lineage Section -->
+            <h4>Lineage</h4>
+            <div class="mb-3">
+                <label for="lineageStatement" class="form-label">Lineage Statement</label>
+                <textarea class="form-control" id="lineageStatement" rows="3" placeholder="Enter Lineage Statement" required></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="spatial-coverage" role="tabpanel" aria-labelledby="spatial-coverage-tab">
+        <!-- Spatial Coverage content -->
+        <div class="col-md-6">
+                <h4>Longitude Settings</h4>
+                <div class="form-group">
+                    <label for="westBoundLongitude">West Bound Longitude:</label>
+                    <input type="text" class="form-control" id="westBoundLongitude" name="westBoundLongitude" placeholder="Enter West Bound Longitude">
+                </div>
+                <div class="form-group">
+                    <label for="eastBoundLongitude">East Bound Longitude:</label>
+                    <input type="text" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" placeholder="Enter East Bound Longitude">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Latitude Settings</h4>
+                <div class="form-group">
+                    <label for="southBoundLatitude">South Bound Latitude:</label>
+                    <input type="text" class="form-control" id="southBoundLatitude" name="southBoundLatitude" placeholder="Enter South Bound Latitude">
+                </div>
+                <div class="form-group">
+                    <label for="northBoundLatitude">North Bound Latitude:</label>
+                    <input type="text" class="form-control" id="northBoundLatitude" name="northBoundLatitude" placeholder="Enter North Bound Latitude">
+                </div>
+            </div>
+    </div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Organization Details</h4>
+                <div class="form-group">
+                    <label for="organization">Organization:</label>
+                    <input type="text" class="form-control" id="organization" name="organization" placeholder="Enter Organization Name">
+                </div>
+                <div class="form-group">
+                    <label for="orgContactInfo">Contact Information:</label>
+                    <input type="text" class="form-control" id="orgContactInfo" name="orgContactInfo" placeholder="Enter Contact Information">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Individual Details</h4>
+                <div class="form-group">
+                    <label for="individual">Individual:</label>
+                    <input type="text" class="form-control" id="individual" name="individual" placeholder="Enter Individual's Name">
+                </div>
+                <div class="form-group">
+                    <label for="indContactInfo">Contact Information:</label>
+                    <input type="text" class="form-control" id="indContactInfo" name="indContactInfo" placeholder="Enter Contact Information">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+<!-- Download Button -->
+<div class="text-center mt-4">
+    <button class="btn btn-success" type="button" id="download-metadata" onclick="downloadMetadata()">Download Metadata</button>
+</div>
+
+<!-- To ensure that Contact attributes remain conditional, either left or right -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const orgFields = document.querySelectorAll('#organization, #orgContactInfo');
+    const indFields = document.querySelectorAll('#individual, #indContactInfo');
+
+    function disableFields(fields, state) {
+        fields.forEach(field => {
+            field.disabled = state;
+        });
+    }
+
+    orgFields.forEach(field => field.addEventListener('input', () => {
+        if (field.value.trim() !== "") {
+            disableFields(indFields, true);
+        } else if (!orgFields.some(f => f.value.trim() !== "")) {
+            disableFields(indFields, false);
+        }
+    }));
+
+    indFields.forEach(field => field.addEventListener('input', () => {
+        if (field.value.trim() !== "") {
+            disableFields(orgFields, true);
+        } else if (!indFields.some(f => f.value.trim() !== "")) {
+            disableFields(orgFields, false);
+        }
+    }));
+});
+</script>
 
 {% endblock %}
 
 {% block app_actions %}
-  {% gizmo save_button %}
-  {% gizmo edit_button %}
-  {% gizmo remove_button %}
-  {% gizmo previous_button %}
-  {% gizmo next_button %}
+{% gizmo save_button %}
+{% gizmo edit_button %}
+{% gizmo remove_button %}
+{% gizmo previous_button %}
+{% gizmo next_button %}
 {% endblock %}
