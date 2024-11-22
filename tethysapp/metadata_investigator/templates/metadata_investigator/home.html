@@ -50,25 +50,38 @@
         <div class="container mt-4">
             <form>
                 <div class="mb-3">
-                    <label for="metadataIdentifier" class="form-label">Metadata Identifier</label>
-                    <input type="text" class="form-control" id="metadataIdentifier" placeholder="Enter Metadata Identifier">
+                    <label for="metadataIdentifier" class="form-label">Metadata Identifier <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="metadataIdentifier" placeholder="Enter Metadata Identifier" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="title" placeholder="Enter Title" required>
                 </div>
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" placeholder="Enter Title">
+                    <label for="abstract" class="form-label">Abstract <span class="text-danger">*</span></label>
+                    <textarea class="form-control" id="abstract" rows="3" placeholder="Enter Abstract" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="abstract" class="form-label">Abstract</label>
-                    <textarea class="form-control" id="abstract" rows="3" placeholder="Enter Abstract"></textarea>
+                    <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
+                    <select class="form-control" id="language" required>
+                        <option value="English">English</option>
+                        <option value="French">French</option>
+                        <option value="Spanish">Spanish</option>
+                        <!-- Add more options as necessary -->
+                    </select>
                 </div>
+
                 <div class="mb-3">
-                    <label for="language" class="form-label">Language</label>
-                    <input type="text" class="form-control" id="language" placeholder="Enter Language">
+                    <label for="characterEncoding" class="form-label">Character Encoding <span class="text-danger">*</span></label>
+                    <select class="form-control" id="characterEncoding" required>
+                        <option value="UTF-8">UTF-8</option>
+                        <option value="ISO-8859-1">ISO-8859-1</option>
+                        <option value="ASCII">ASCII</option>
+                        <!-- Add more options as necessary -->
+                    </select>
                 </div>
-                <div class="mb-3">
-                    <label for="characterEncoding" class="form-label">Character Encoding</label>
-                    <input type="text" class="form-control" id="characterEncoding" placeholder="Enter Character Encoding">
-                </div>
+
             </form>
         </div>
     </div>
@@ -110,24 +123,25 @@
         <div class="col-md-6">
                 <h4>Longitude Settings</h4>
                 <div class="form-group">
-                    <label for="westBoundLongitude">West Bound Longitude:</label>
-                    <input type="text" class="form-control" id="westBoundLongitude" name="westBoundLongitude" placeholder="Enter West Bound Longitude">
+                    <label for="westBoundLongitude">West Bound Longitude: <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="westBoundLongitude" name="westBoundLongitude" required placeholder="Enter West Bound Longitude" min="-180" max="180" step="0.0001">
                 </div>
                 <div class="form-group">
-                    <label for="eastBoundLongitude">East Bound Longitude:</label>
-                    <input type="text" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" placeholder="Enter East Bound Longitude">
+                    <label for="eastBoundLongitude">East Bound Longitude: <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" required placeholder="Enter East Bound Longitude" min="-180" max="180" step="0.0001">
                 </div>
             </div>
             <div class="col-md-6">
                 <h4>Latitude Settings</h4>
-                <div class="form-group">
-                    <label for="southBoundLatitude">South Bound Latitude:</label>
-                    <input type="text" class="form-control" id="southBoundLatitude" name="southBoundLatitude" placeholder="Enter South Bound Latitude">
+               <div class="form-group">
+                    <label for="southBoundLatitude">South Bound Latitude: <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="southBoundLatitude" name="southBoundLatitude" required placeholder="Enter South Bound Latitude" min="-90" max="90" step="0.0001">
                 </div>
                 <div class="form-group">
-                    <label for="northBoundLatitude">North Bound Latitude:</label>
-                    <input type="text" class="form-control" id="northBoundLatitude" name="northBoundLatitude" placeholder="Enter North Bound Latitude">
+                    <label for="northBoundLatitude">North Bound Latitude: <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="northBoundLatitude" name="northBoundLatitude" required placeholder="Enter North Bound Latitude" min="-90" max="90" step="0.0001">
                 </div>
+
             </div>
     </div>
     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -141,7 +155,7 @@
                 </div>
                 <div class="form-group">
                     <label for="orgContactInfo">Contact Information:</label>
-                    <input type="text" class="form-control" id="orgContactInfo" name="orgContactInfo" placeholder="Enter Contact Information">
+                    <input type="tel" class="form-control" id="orgContactInfo" name="orgContactInfo" placeholder="Enter Contact Information">
                 </div>
             </div>
             <div class="col-md-6">
@@ -152,7 +166,7 @@
                 </div>
                 <div class="form-group">
                     <label for="indContactInfo">Contact Information:</label>
-                    <input type="text" class="form-control" id="indContactInfo" name="indContactInfo" placeholder="Enter Contact Information">
+                    <input type="tel" class="form-control" id="indContactInfo" name="indContactInfo" placeholder="Enter Contact Information">
                 </div>
             </div>
         </div>
