@@ -109,7 +109,6 @@
                 <label for="reportResult" class="form-label">Report Result</label>
                 <input type="text" class="form-control" id="reportResult" placeholder="Enter Report Result" required>
             </div>
-
             <!-- Lineage Section -->
             <h4>Lineage</h4>
             <div class="mb-3">
@@ -118,9 +117,12 @@
             </div>
         </div>
     </div>
+
+
     <div class="tab-pane fade" id="spatial-coverage" role="tabpanel" aria-labelledby="spatial-coverage-tab">
         <!-- Spatial Coverage content -->
-        <div class="col-md-6">
+        <div class = "row">
+            <div class="col-md-6">
                 <h4>Longitude Settings</h4>
                 <div class="form-group">
                     <label for="westBoundLongitude">West Bound Longitude: <span class="text-danger">*</span></label>
@@ -143,6 +145,11 @@
                 </div>
 
             </div>
+            <div class="col-md-6">
+                <h2>Interactive Map</h2>
+                {{ map_view_gizmo }}
+            </div>
+        </div>
     </div>
     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
     <div class="container mt-4">
@@ -223,3 +230,4 @@ document.addEventListener('DOMContentLoaded', function() {
 {{ block.super }}
 <script src="{{ STATIC_URL }}js/main.js"></script>
 {% endblock %}
+

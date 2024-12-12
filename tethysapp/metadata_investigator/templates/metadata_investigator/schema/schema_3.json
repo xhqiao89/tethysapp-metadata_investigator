@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "S100FC:S100_FC_FeatureCatalogue": {
+      "type": "object",
+      "properties": {
+        "S100FC:name": { "type": "string" },
+        "S100FC:scope": { "type": "string" },
+        "S100FC:fieldOfApplication": { "type": "string" },
+        "S100FC:versionNumber": { "type": "string" },
+        "S100FC:versionDate": { "type": "string" },
+        "S100FC:productId": { "type": "string" },
+        "S100FC:metadataIdentifier": { "type": "string" },
+        "S100FC:title": { "type": "string" },
+        "S100FC:abstract": { "type": "string" },
+        "S100FC:language": { "type": "string" },
+        "S100FC:characterEncoding": { "type": "string" },
+        "S100FC:dataQuality": {
+          "type": "object",
+          "properties": {
+            "S100FC:scopeLevel": { "type": "string" },
+            "S100FC:scopeLevelDescription": { "type": "string" },
+            "S100FC:reportType": { "type": "string" },
+            "S100FC:reportResult": { "type": "string" },
+            "S100FC:lineageStatement": { "type": "string" }
+          }
+        },
+        "S100FC:spatialCoverage": {
+          "type": "object",
+          "properties": {
+            "S100FC:westBoundLongitude": { "type": "string" },
+            "S100FC:eastBoundLongitude": { "type": "string" },
+            "S100FC:southBoundLatitude": { "type": "string" },
+            "S100FC:northBoundLatitude": { "type": "string" }
+          }
+        },
+        "S100FC:contact": {
+          "type": "object",
+          "properties": {
+            "S100FC:organization": { "type": "string" },
+            "S100FC:contactInfo": { "type": "string" }
+          }
+        },
+        "S100FC:individual": {
+          "type": "object",
+          "properties": {
+            "S100FC:name": { "type": "string" },
+            "S100FC:contactInfo": { "type": "string" }
+          }
+        },
+        "S100FC:classification": { "type": "string" },
+        "S100FC:S100_FC_DefinitionSources": {
+          "type": "object"
+        },
+        "S100FC:S100_FC_SimpleAttributes": {
+          "type": "object"
+        },
+        "S100FC:S100_FC_FeatureTypes": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
