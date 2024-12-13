@@ -8,11 +8,11 @@ class MetadataInvestigator(TethysAppBase):
     Tethys app class for Metadata Investigator.
     """
 
-    name = 'Metadata Investigator'
+    name = 'Spatial Metadata Investigator'
     description = 'Create, validate, and manage metadata file for hydrographic data following IHO S100 standard'
     package = 'metadata_investigator'  # WARNING: Do not change this value
     index = 'home'
-    icon = f'{package}/images/icon.gif'
+    icon = f'{package}/images/thumbnail.png'
     root_url = 'metadata-investigator'
     color = '#5f27cd'
     tags = 'Hydrographic, IHO S100, Metadata'

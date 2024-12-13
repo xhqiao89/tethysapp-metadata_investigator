@@ -9,9 +9,10 @@
 {% endblock %}
 
 {% block app_content %}
-<h1>Welcome to Metadata Investigator</h1>
-<p>Welcome to Metadata Investigator, designed to help you easily create and validate metadata files that comply with the IHO S-100 standard. Our tool makes S-100 compliance fast, simple, and efficient.</p>
-
+<h1>Create, Manage, and Share your Metadata!</h1>
+<p>Welcome to Spatial Metadata Investigator, this platform is designed to simplify your metadata management. Here, you can create, validate, and share metadata files that fully comply with the International Hydrographic Organization (IHO) S-100 Universal Hydrographic Data Model (IHO S-100).
+    Whether you’re a maritime professional or a GIS enthusiast, Spatial Metadata Investigator makes it easy to ensure your data meets industry standards while fostering collaboration and efficiency in your projects.
+    Dive in and take the hassle out of metadata compliance!</p>
 {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
 {% endif %}
@@ -21,7 +22,7 @@
 
 <!-- Upload and Browse Section -->
 <div class="text-center mb-4">
-    <p style="font-weight: bold; font-size: 18px; color: #007BFF;">Create from scratch, or select a local metadata file:</p>
+    <p style="font-weight: bold; font-size: 18px; color: #007BFF;">Create a New Metadata File, or Search/Edit Existing File from Local Copy</p>
     <form id="upload-form" action="{% url 'metadata_investigator:upload_file' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="file" id="load-from-local" name="file" accept=".xml,application/xml" class="form-control-file">
@@ -46,139 +47,278 @@
 </ul>
 
 <div class="tab-content" id="myTabContent">
+
     <div class="tab-pane fade show active" id="identification" role="tabpanel" aria-labelledby="identification-tab">
         <div class="container mt-4">
+            <div class="mb-3">
+                <p style="font-style: italic; color: blue;">Provide general information about the dataset</p>
+            </div>
             <form>
                 <div class="mb-3">
-                    <label for="metadataIdentifier" class="form-label">Metadata Identifier <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="metadataIdentifier" placeholder="Enter Metadata Identifier" required>
+                    <label for="metadata-identifier" style="font-weight: bold;">Metadata Identifier <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="metadata-identifier" placeholder="Enter Metadata Identifier" required>
+                    <small class="form-text text-muted" style="font-style: italic;">(A unique identifier related to the dataset, could be universally unique identifier (UUID), globally unique identifier (GUID), or a well-defined string from your data system).</small>
+                    <button type="button" class="btn btn-secondary btn-sm mt-1" onclick="generateUUID()">Generate UUID</button>
                 </div>
-
                 <div class="mb-3">
-                    <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+                    <label for="title" style="font-weight: bold;">Dataset Title (A good title includes what, where, and when.) <span style="color: red;">*</span></label>
                     <input type="text" class="form-control" id="title" placeholder="Enter Title" required>
                 </div>
                 <div class="mb-3">
-                    <label for="abstract" class="form-label">Abstract <span class="text-danger">*</span></label>
+                    <label for="abstract" style="font-weight: bold;">Abstract <span style="color: red;">*</span></label>
                     <textarea class="form-control" id="abstract" rows="3" placeholder="Enter Abstract" required></textarea>
+                    <small class="form-text text-muted" style="font-style: italic;">(Provide a description of the dataset)</small>
                 </div>
                 <div class="mb-3">
-                    <label for="language" class="form-label">Language <span class="text-danger">*</span></label>
-                    <select class="form-control" id="language" required>
-                        <option value="English">English</option>
-                        <option value="French">French</option>
-                        <option value="Spanish">Spanish</option>
-                        <!-- Add more options as necessary -->
-                    </select>
+                    <label for="publication-date" style="font-weight: bold;">Publication Date <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="publication-date" placeholder="YYYYMMDD" required>
                 </div>
-
                 <div class="mb-3">
-                    <label for="characterEncoding" class="form-label">Character Encoding <span class="text-danger">*</span></label>
-                    <select class="form-control" id="characterEncoding" required>
-                        <option value="UTF-8">UTF-8</option>
-                        <option value="ISO-8859-1">ISO-8859-1</option>
-                        <option value="ASCII">ASCII</option>
-                        <!-- Add more options as necessary -->
+                    <label for="dataset-format" style="font-weight: bold;">Dataset Format <span style="color: red;">*</span></label>
+                    <select class="form-control" id="dataset-format" required>
+                        <option value="Vector">Vector (GML, Shapefile, KML/KMZ, ENC)</option>
+                        <option value="Raster">Raster and Gridded (GeoTIFF, HDF5, NetCDF, JPEG)</option>
+                        <option value="Tabular">Tabular data</option>
+                        <option value="XML/JSON">XML/JSON</option>
+                        <option value="Publication">Publication</option>
                     </select>
                 </div>
-
+                <div class="mb-3">
+                    <label for="topic-category" style="font-weight: bold;">Topic Category <span style="color: red;">*</span></label>
+                    <select class="form-control" id="topic-category" required>
+                        <option value="Farming">Farming</option>
+                        <option value="Biota">Biota</option>
+                        <option value="Boundaries">Boundaries</option>
+                        <option value="Climatology/Meteorology/Atmosphere">Climatology/Meteorology/Atmosphere</option>
+                        <option value="Economy">Economy</option>
+                        <option value="Elevation">Elevation</option>
+                        <option value="Environment">Environment</option>
+                        <option value="Geoscientific Information">Geoscientific Information</option>
+                        <option value="Health">Health</option>
+                        <option value="Imagery/Base Maps/Earth Cover">Imagery/Base Maps/Earth Cover</option>
+                        <option value="Inland Waters">Inland Waters</option>
+                        <option value="Location">Location</option>
+                        <option value="Oceans">Oceans</option>
+                        <option value="Planning/Cadastre">Planning/Cadastre</option>
+                        <option value="Society">Society</option>
+                        <option value="Structure">Structure</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Utilities/Communication">Utilities/Communication</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="online-link" style="font-weight: bold;">Online link to the Dataset</label>
+                    <input type="url" class="form-control" id="online-link" placeholder="Enter URLs separated by commas">
+                    <small class="form-text text-muted" style="font-style: italic;">(Is there a link to the data or the agency that produced it? If so, provide the URL(s). Please use commas to separate multiple URLs).</small>
+                </div>
+                <div class="mb-3">
+                    <label for="keywords" style="font-weight: bold;">Keywords</label>
+                    <input type="text" class="form-control" id="keywords" placeholder="Provide a list of descriptive keywords related to the content of your dataset.">
+                </div>
+                <div class="mb-3">
+                    <label for="data-access-constraint" style="font-weight: bold;">Data Access Constraint</label>
+                    <textarea class="form-control" id="data-access-constraint" rows="3" placeholder="Describe any restriction of legal prerequisites for accessing the dataset."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="data-use-constraints" style="font-weight: bold;">Data Use Constraints</label>
+                    <textarea class="form-control" id="data-use-constraints" rows="3" placeholder="Describe any restriction of legal prerequisites for using the dataset."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="data-fees" style="font-weight: bold;">Data Fees</label>
+                    <textarea class="form-control" id="data-fees" rows="3" placeholder="Describe any fees associated with this dataset."></textarea>
+                </div>
             </form>
         </div>
     </div>
+
+
+
     <div class="tab-pane fade" id="data-quality" role="tabpanel" aria-labelledby="data-quality-tab">
         <div class="container mt-4">
-            <h2>Data Quality Details</h2>
-            <!-- Scope Section -->
             <div class="mb-3">
-                <label for="scopeLevel" class="form-label">Scope Level</label>
-                <input type="text" class="form-control" id="scopeLevel" placeholder="Enter Scope Level" required>
+                <p style="font-style: italic; color: blue;">Provide information about the accuracy of the dataset and details about how it was produced</p>
             </div>
-            <div class="mb-3">
-                <label for="scopeLevelDescription" class="form-label">Scope Level Description</label>
-                <textarea class="form-control" id="scopeLevelDescription" placeholder="Describe the Scope Level"></textarea>
-            </div>
-
-            <!-- Report Section -->
-            <h4>Reports</h4>
-            <!-- Dynamically add reports as needed -->
-            <div class="mb-3">
-                <label for="reportType" class="form-label">Report Type</label>
-                <input type="text" class="form-control" id="reportType" placeholder="Enter Report Type" required>
-            </div>
-            <div class="mb-3">
-                <label for="reportResult" class="form-label">Report Result</label>
-                <input type="text" class="form-control" id="reportResult" placeholder="Enter Report Result" required>
-            </div>
-            <!-- Lineage Section -->
-            <h4>Lineage</h4>
-            <div class="mb-3">
-                <label for="lineageStatement" class="form-label">Lineage Statement</label>
-                <textarea class="form-control" id="lineageStatement" rows="3" placeholder="Enter Lineage Statement" required></textarea>
-            </div>
+            <form>
+                <div class="mb-3">
+                    <label for="scope-level" class="form-label" style="font-weight: bold;">Data Quality Scope (Specific data to which the quality information applies)</label>
+                    <select class="form-select" id="scope-level">
+                        <option value="Dataset">Dataset</option>
+                        <option value="Series">Series</option>
+                        <option value="Feature">Feature</option>
+                        <option value="FeatureType">FeatureType</option>
+                        <option value="Attribute">Attribute</option>
+                        <option value="AttributeType">AttributeType</option>
+                        <option value="Tile">Tile</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="data-lineage-summary" class="form-label" style="font-weight: bold;">Data Lineage Summary (How the dataset was created, including its origin, processes, and transformations?)</label>
+                    <textarea class="form-control" id="data-lineage-summary" rows="3" placeholder="Describe the data lineage"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="process-step" class="form-label" style="font-weight: bold;">Process Step (Describe the methods performed to collect or generate the data. Provide as much detail as possible)</label>
+                    <textarea class="form-control" id="process-step" rows="3" placeholder="Describe the process step"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="process-date" class="form-label" style="font-weight: bold;">Process Date (YYYYMMDD)</label>
+                    <input type="text" class="form-control" id="process-date" placeholder="Enter Process Date">
+                </div>
+                <div class="mb-3">
+                    <label for="process-step-contact" class="form-label" style="font-weight: bold;">Process Step Contact (Is there a contact person or agency for this processing step?)</label>
+                    <input type="text" class="form-control" id="process-step-contact" placeholder="Enter Process Step Contact">
+                </div>
+                <div class="mb-3">
+                    <label for="sources-used" class="form-label" style="font-weight: bold;">Sources Used to Create the Dataset</label>
+                    <select class="form-select" id="sources-used">
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="data-source-title" class="form-label" style="font-weight: bold;">Data Source Title (A good title includes what, where, and when)</label>
+                    <input type="text" class="form-control" id="data-source-title" placeholder="Enter Data Source Title">
+                </div>
+                <div class="mb-3">
+                    <label for="online-link-data-source" class="form-label" style="font-weight: bold;">Online link to the Data Source (Is there a link to the data or the agency that produced it? If so, provide the URL(s))</label>
+                    <input type="url" class="form-control" id="online-link-data-source" placeholder="Enter URLs separated by commas">
+                </div>
+                <div class="mb-3">
+                    <label for="data-accuracy-report" class="form-label" style="font-weight: bold;">Data Accuracy Report (How accurate are the values in the dataset relative to “true” values? Please describe any tests or methods used to ensure quality /accuracy in the data.)</label>
+                    <textarea class="form-control" id="data-accuracy-report" rows="3" placeholder="Describe the data accuracy"></textarea>
+                </div>
+            </form>
         </div>
     </div>
+
 
 
     <div class="tab-pane fade" id="spatial-coverage" role="tabpanel" aria-labelledby="spatial-coverage-tab">
-        <!-- Spatial Coverage content -->
-        <div class = "row">
-            <div class="col-md-6">
-                <h4>Longitude Settings</h4>
-                <div class="form-group">
-                    <label for="westBoundLongitude">West Bound Longitude: <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="westBoundLongitude" name="westBoundLongitude" required placeholder="Enter West Bound Longitude" min="-180" max="180" step="0.0001">
-                </div>
-                <div class="form-group">
-                    <label for="eastBoundLongitude">East Bound Longitude: <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" required placeholder="Enter East Bound Longitude" min="-180" max="180" step="0.0001">
-                </div>
+    <!-- Spatial Coverage content -->
+        <div class="container mt-4">
+            <div class="mb-3">
+                <p style="font-style: italic; color: blue;">Provide spatial information about the dataset</p>
             </div>
-            <div class="col-md-6">
-                <h4>Latitude Settings</h4>
-               <div class="form-group">
-                    <label for="southBoundLatitude">South Bound Latitude: <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="southBoundLatitude" name="southBoundLatitude" required placeholder="Enter South Bound Latitude" min="-90" max="90" step="0.0001">
-                </div>
-                <div class="form-group">
-                    <label for="northBoundLatitude">North Bound Latitude: <span class="text-danger">*</span></label>
-                    <input type="number" class="form-control" id="northBoundLatitude" name="northBoundLatitude" required placeholder="Enter North Bound Latitude" min="-90" max="90" step="0.0001">
+            <form>
+                <div class="mb-3">
+                    <label for="descriptionGeographicExtent" style="font-weight: bold;">Description of Geographic Extent <span style="color: red;">*</span></label>
+                    <textarea class="form-control" id="descriptionGeographicExtent" name="descriptionGeographicExtent" required placeholder="Enter Description of Geographic Extent"></textarea>
                 </div>
 
-            </div>
-            <div class="col-md-6">
-                <h2>Interactive Map</h2>
-                {{ map_view_gizmo }}
-            </div>
+                <div class="mb-3">
+                    <h4>Spatial Reference System</h4>
+                    <div class="form-group">
+                        <label for="code" style="font-weight: bold;">Code <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="code" name="code" required placeholder="Enter Code">
+                    </div>
+                    <div class="form-group">
+                        <label for="codeSpace" style="font-weight: bold;">Code Space</label>
+                        <input type="text" class="form-control" id="codeSpace" name="codeSpace" placeholder="Enter Code Space">
+                    </div>
+                    <div class="form-group">
+                        <label for="version" style="font-weight: bold;">Version</label>
+                        <input type="text" class="form-control" id="version" name="version" placeholder="Enter Version">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <h4>Bounding Coordinates</h4>
+                    <div class="form-group">
+                        <label for="westBoundLongitude" style="font-weight: bold;">West (-180 - 180) <span style="color: red;">*</span></label>
+                        <input type="number" class="form-control" id="westBoundLongitude" name="westBoundLongitude" required placeholder="-180.0000" min="-180" max="180" step="0.0001">
+                    </div>
+                    <div class="form-group">
+                        <label for="eastBoundLongitude" style="font-weight: bold;">East (-180 - 180) <span style="color: red;">*</span></label>
+                        <input type="number" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" required placeholder="180.0000" min="-180" max="180" step="0.0001">
+                    </div>
+                    <div class="form-group">
+                        <label for="northBoundLatitude" style="font-weight: bold;">North (-90 - 90) <span style="color: red;">*</span></label>
+                        <input type="number" class="form-control" id="northBoundLatitude" name="northBoundLatitude" required placeholder="90.0000" min="-90" max="90" step="0.0001">
+                    </div>
+                    <div class="form-group">
+                        <label for="southBoundLatitude" style="font-weight: bold;">South (-90 - 90) <span style="color: red;">*</span></label>
+                        <input type="number" class="form-control" id="southBoundLatitude" name="southBoundLatitude" required placeholder="-90.0000" min="-90" max="90" step="0.0001">
+                    </div>
+                </div>
+
+<!--                <div class="col-md-6 mt-4">-->
+<!--                    <h2>Interactive Map</h2>-->
+<!--                    {{ map_view_gizmo }}-->
+<!--                </div>-->
+            </form>
         </div>
     </div>
+
+
     <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-6">
-                <h4>Organization Details</h4>
-                <div class="form-group">
-                    <label for="organization">Organization:</label>
-                    <input type="text" class="form-control" id="organization" name="organization" placeholder="Enter Organization Name">
-                </div>
-                <div class="form-group">
-                    <label for="orgContactInfo">Contact Information:</label>
-                    <input type="tel" class="form-control" id="orgContactInfo" name="orgContactInfo" placeholder="Enter Contact Information">
-                </div>
+        <div class="container mt-4">
+            <div class="mb-3">
+                <p style="font-style: italic; color: blue;">Provide information about the individual who wrote the metadata for the dataset. This is usually YOUR information</p>
             </div>
-            <div class="col-md-6">
-                <h4>Individual Details</h4>
-                <div class="form-group">
-                    <label for="individual">Individual:</label>
-                    <input type="text" class="form-control" id="individual" name="individual" placeholder="Enter Individual's Name">
+            <h4>Metadata Contact (Who wrote the metadata? Alternatively, who can be contacted for questions pertaining to the metadata?)</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="organizationName" style="font-weight: bold;">Organization Name <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="organizationName" name="organizationName" placeholder="Enter Organization Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactPerson" style="font-weight: bold;">Contact Person</label>
+                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Enter Contact Person">
+                    </div>
+                    <div class="form-group">
+                        <label for="titleOfPosition" style="font-weight: bold;">Title of Position</label>
+                        <input type="text" class="form-control" id="titleOfPosition" name="titleOfPosition" placeholder="Enter Title of Position">
+                    </div>
+                    <div class="form-group">
+                        <label for="telephoneNumber" style="font-weight: bold;">Telephone Number <span style="color: red;">*</span></label>
+                        <input type="tel" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Enter Telephone Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="faxNumber" style="font-weight: bold;">Fax Number</label>
+                        <input type="tel" class="form-control" id="faxNumber" name="faxNumber" placeholder="Enter Fax Number">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailAddress" style="font-weight: bold;">Email Address</label>
+                        <input type="email" class="form-control" id="emailAddress" name="emailAddress" placeholder="Enter Email Address">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="indContactInfo">Contact Information:</label>
-                    <input type="tel" class="form-control" id="indContactInfo" name="indContactInfo" placeholder="Enter Contact Information">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="address1" style="font-weight: bold;">Address 1 (Number or Street) <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Address 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="address2" style="font-weight: bold;">Address 2 (If Applicable)</label>
+                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Address 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="address3" style="font-weight: bold;">Address 3 (If Applicable)</label>
+                        <input type="text" class="form-control" id="address3" name="address3" placeholder="Enter Address 3">
+                    </div>
+                    <div class="form-group">
+                        <label for="city" style="font-weight: bold;">City</label>
+                        <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+                    </div>
+                    <div class="form-group">
+                        <label for="stateProvince" style="font-weight: bold;">State / Province</label>
+                        <input type="text" class="form-control" id="stateProvince" name="stateProvince" placeholder="Enter State / Province">
+                    </div>
+                    <div class="form-group">
+                        <label for="zipcode" style="font-weight: bold;">Zipcode <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="Enter Zipcode">
+                    </div>
+                    <div class="form-group">
+                        <label for="country" style="font-weight: bold;">Country</label>
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Enter Country">
+                    </div>
+                    <div class="form-group">
+                        <label for="addressType" style="font-weight: bold;">Address Type</label>
+                        <input type="text" class="form-control" id="addressType" name="addressType" placeholder="Enter Address Type">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 </div>
 <!-- Download Button -->
@@ -186,34 +326,12 @@
     <button class="btn btn-success" type="button" id="download-metadata">Download Metadata</button>
 </div>
 
-<!-- To ensure that Contact attributes remain conditional, either left or right -->
+<!-- UUID -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const orgFields = document.querySelectorAll('#organization, #orgContactInfo');
-    const indFields = document.querySelectorAll('#individual, #indContactInfo');
-
-    function disableFields(fields, state) {
-        fields.forEach(field => {
-            field.disabled = state;
-        });
-    }
-
-    orgFields.forEach(field => field.addEventListener('input', () => {
-        if (field.value.trim() !== "") {
-            disableFields(indFields, true);
-        } else if (!orgFields.some(f => f.value.trim() !== "")) {
-            disableFields(indFields, false);
-        }
-    }));
-
-    indFields.forEach(field => field.addEventListener('input', () => {
-        if (field.value.trim() !== "") {
-            disableFields(orgFields, true);
-        } else if (!indFields.some(f => f.value.trim() !== "")) {
-            disableFields(orgFields, false);
-        }
-    }));
-});
+function generateUUID() {
+    const uuid = URL.createObjectURL(new Blob()).slice(-36);
+    document.getElementById('metadata-identifier').value = uuid;
+}
 </script>
 
 {% endblock %}
