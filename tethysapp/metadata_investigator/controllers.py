@@ -8,6 +8,8 @@ from django.conf import settings
 import xmltodict
 from jsonschema import validate, ValidationError
 
+from tethys_sdk.gizmos import MapView
+
 
 @controller
 def home(request):
@@ -70,12 +72,27 @@ def home(request):
         }
     )
 
+    map_view_options = {
+        'height': '500px',
+        'width': '100%',
+        'controls': ['ZoomSlider', 'Rotate', 'FullScreen'],
+        'layers': [],
+        'view': {
+            'projection': 'EPSG:4326',
+            'center': [-110, 39.5],  # Default center of the map
+            'zoom': 6
+        },
+        'basemap': 'OpenStreetMap',
+    }
+    map_view_gizmo = MapView(**map_view_options)
+
     context = {
         'save_button': save_button,
         'edit_button': edit_button,
         'remove_button': remove_button,
         'previous_button': previous_button,
-        'next_button': next_button
+        'next_button': next_button,
+        'map_view_gizmo': map_view_gizmo
     }
 
     return render(request, 'metadata_investigator/home.html', context)
@@ -85,8 +102,9 @@ def home(request):
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 ##Construncting the path to the schema file
-schema_path = os.path.join(current_dir, 'templates', 'metadata_investigator', 'schema', 'my_schema.json')
-
+# schema_path = os.path.join(current_dir, 'templates', 'metadata_investigator', 'schema', 'my_schema.json')
+# schema_path = os.path.join(current_dir, 'templates', 'metadata_investigator', 'schema', 'schema_2.json')
+schema_path = os.path.join(current_dir, 'templates', 'metadata_investigator', 'schema', 'schema_3.json')
 ##Loading the JSON schema
 with open(schema_path, 'r') as schema_file:
     json_schema = json.load(schema_file)
@@ -168,19 +186,42 @@ def handle_contacts(metadata):
 
 
 def handle_extent(metadata):
-    attributes = {}
-    extent = metadata.get('identificationInfo', {}).get('extent', {})
-    attributes.update({
-        'geographicDescription': extent.get('geographicDescription', ''),
-        'westBoundLongitude': extent.get('westBoundLongitude', ''),
-        'eastBoundLongitude': extent.get('eastBoundLongitude', ''),
-        'southBoundLatitude': extent.get('southBoundLatitude', ''),
-        'northBoundLatitude': extent.get('northBoundLatitude', ''),
-    })
+    print("Initial Metadata:", metadata)
+
+    # Since feature_catalogue extraction works, align this logic similarly
+    # Extract the feature catalogue part of the JSON, assuming metadata already points to the root
+    feature_catalogue = metadata.get('S100FC:S100_FC_FeatureCatalogue', {})
+    print("Feature Catalogue Data:", feature_catalogue)
+
+    # Extract the nested 'spatialCoverage' field directly from the feature catalogue
+    spatial_coverage = feature_catalogue.get('S100FC:spatialCoverage', {})
+    print("Spatial Coverage Data Found:", spatial_coverage)
+
+    if not spatial_coverage:
+        print("No spatial coverage data found within feature catalogue.")
+        return {
+            'geographicDescription': 'Not available',
+            'westBoundLongitude': 'Not available',
+            'eastBoundLongitude': 'Not available',
+            'southBoundLatitude': 'Not available',
+            'northBoundLatitude': 'Not available'
+        }
+
+    # If spatial coverage is found, extract specific spatial attributes
+    attributes = {
+        'westBoundLongitude': spatial_coverage.get('S100FC:westBoundLongitude', 'Not available'),
+        'eastBoundLongitude': spatial_coverage.get('S100FC:eastBoundLongitude', 'Not available'),
+        'southBoundLatitude': spatial_coverage.get('S100FC:southBoundLatitude', 'Not available'),
+        'northBoundLatitude': spatial_coverage.get('S100FC:northBoundLatitude', 'Not available')
+    }
+
+    print("Extracted Geographic Attributes:", attributes)
     return attributes
 
 
+
 def handle_feature_catalogue(json_data):
+    print(json_data)
     attributes = {}
     feature_catalogue = json_data.get('S100FC:S100_FC_FeatureCatalogue', {})
     attributes.update({
@@ -193,6 +234,9 @@ def handle_feature_catalogue(json_data):
         'fc_classification': feature_catalogue.get('S100FC:classification', ''),
     })
     return attributes
+
+
+
 
 # @controller(name='upload_file', url='metadata-investigator/upload')
 # def upload_file(request):
