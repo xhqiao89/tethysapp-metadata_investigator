@@ -12,8 +12,18 @@
 {# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
-{% block app_navigation_items %}
+{% block styles %}
+  {{ block.super }}
+	<style>
+		#nav-title-wrapper {
+		  margin-left: 15px;
+		}
+	</style>
 {% endblock %}
+
+{% block app_navigation_override %}
+{% endblock %}
+
 
 {% block app_content %}
 {% endblock %}
