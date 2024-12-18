@@ -129,7 +129,6 @@
     </div>
 
 
-
     <div class="tab-pane fade" id="data-quality" role="tabpanel" aria-labelledby="data-quality-tab">
         <div class="container mt-4">
             <div class="mb-3">
@@ -287,24 +286,20 @@
                         <input type="text" class="form-control" id="address3" name="address3" placeholder="Enter Address 3(If Applicable)">
                     </div>
                     <div class="form-group">
-                        <label for="city" style="font-weight: bold;">City</label>
-                        <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+                        <label for="city" style="font-weight: bold;">City <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="city" name="city" required placeholder="Enter City">
                     </div>
                     <div class="form-group">
-                        <label for="stateProvince" style="font-weight: bold;">State / Province</label>
-                        <input type="text" class="form-control" id="stateProvince" name="stateProvince" placeholder="Enter State / Province">
+                        <label for="stateProvince" style="font-weight: bold;">State / Province <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="stateProvince" name="stateProvince" required placeholder="Enter State / Province">
                     </div>
                     <div class="form-group">
                         <label for="zipcode" style="font-weight: bold;">Zipcode <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="Enter Zipcode">
+                        <input type="text" class="form-control" id="zipcode" name="zipcode" required placeholder="Enter Zipcode">
                     </div>
                     <div class="form-group">
-                        <label for="country" style="font-weight: bold;">Country</label>
-                        <input type="text" class="form-control" id="country" name="country" placeholder="Enter Country">
-                    </div>
-                    <div class="form-group">
-                        <label for="addressType" style="font-weight: bold;">Address Type</label>
-                        <input type="text" class="form-control" id="addressType" name="addressType" placeholder="Enter Address Type">
+                        <label for="country" style="font-weight: bold;">Country <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="country" name="country" required placeholder="Enter Country">
                     </div>
                 </div>
             </div>

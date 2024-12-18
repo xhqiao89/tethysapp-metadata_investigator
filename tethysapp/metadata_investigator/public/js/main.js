@@ -19,7 +19,8 @@ function getMissingFields() {
         'dataset-format', 'topic-category',
         'descriptionGeographicExtent',
         'westBoundLongitude', 'eastBoundLongitude', 'northBoundLatitude', 'southBoundLatitude',
-        'organizationName', 'telephoneNumber', 'address1', 'zipcode'
+        'organizationName', 'telephoneNumber', 'address1', 'zipcode',
+        'city', 'stateProvince', 'country'
     ];
 
     let missingFields = [];
@@ -86,7 +87,6 @@ function downloadMetadata() {
     const state = document.getElementById('stateProvince').value;
     const zipcode = document.getElementById('zipcode').value;
     const country = document.getElementById('country').value;
-    const addressType = document.getElementById('addressType').value;
 
 //    console.log(`metadataId: ${metadataId}`);
 //    console.log(`title: ${title}`);
@@ -150,7 +150,7 @@ function downloadMetadata() {
     }
 
     // Include the contact section only if any optional field is filled
-    if (organization || contactPerson || positionTitle || telephone || faxNumber || email || address1 || address2 || address3 || city || state || zipcode || country || addressType) {
+    if (organization || contactPerson || positionTitle || telephone || faxNumber || email || address1 || address2 || address3 || city || state || zipcode || country ) {
         xmlContent += `
             <S100FC:contact>
                 ${organization ? `<S100FC:organization>${organization}</S100FC:organization>` : ''}
@@ -166,7 +166,6 @@ function downloadMetadata() {
                 ${state ? `<S100FC:state>${state}</S100FC:state>` : ''}
                 ${zipcode ? `<S100FC:zipcode>${zipcode}</S100FC:zipcode>` : ''}
                 ${country ? `<S100FC:country>${country}</S100FC:country>` : ''}
-                ${addressType ? `<S100FC:addressType>${addressType}</S100FC:addressType>` : ''}
             </S100FC:contact>`;
     }
 
