@@ -17,7 +17,7 @@ function getMissingFields() {
     const requiredIds = [
         'metadata-identifier', 'title', 'abstract', 'publication-date',
         'dataset-format', 'topic-category',
-        'descriptionGeographicExtent', 'code',
+        'descriptionGeographicExtent',
         'westBoundLongitude', 'eastBoundLongitude', 'northBoundLatitude', 'southBoundLatitude',
         'organizationName', 'telephoneNumber', 'address1', 'zipcode'
     ];
@@ -65,13 +65,12 @@ function downloadMetadata() {
 
     //input values of spatial coverage
     const geographicDescription = document.getElementById('descriptionGeographicExtent').value;
-    const spatialReferenceCode = document.getElementById('code').value;
-    const spatialReferenceCodeSpace = document.getElementById('codeSpace').value;
-    const spatialReferenceVersion = document.getElementById('version').value;
     const west = document.getElementById('westBoundLongitude').value;
     const east = document.getElementById('eastBoundLongitude').value;
     const north = document.getElementById('northBoundLatitude').value;
     const south = document.getElementById('southBoundLatitude').value;
+    const spatialReferenceCode = document.getElementById('crs').value;
+    const spatialReferenceVersion = document.getElementById('version').value;
 
     //input values of metadata reference form
     const organization = document.getElementById('organizationName').value;
@@ -137,17 +136,16 @@ function downloadMetadata() {
         xmlContent += `
             <S100FC:spatialCoverage>
                 ${geographicDescription ? `<S100FC:geographicDescription>${geographicDescription}</S100FC:geographicDescription>` : ''}
-                <S100FC:spatialReferenceSystem>
-                    ${spatialReferenceCode ? `<S100FC:code>${spatialReferenceCode}</S100FC:code>` : ''}
-                    ${spatialReferenceCodeSpace ? `<S100FC:codeSpace>${spatialReferenceCodeSpace}</S100FC:codeSpace>` : ''}
-                    ${spatialReferenceVersion ? `<S100FC:version>${spatialReferenceVersion}</S100FC:version>` : ''}
-                </S100FC:spatialReferenceSystem>
                 <S100FC:boundingCoordinates>
                     ${west ? `<S100FC:west>${west}</S100FC:west>` : ''}
                     ${east ? `<S100FC:east>${east}</S100FC:east>` : ''}
                     ${north ? `<S100FC:north>${north}</S100FC:north>` : ''}
                     ${south ? `<S100FC:south>${south}</S100FC:south>` : ''}
                 </S100FC:boundingCoordinates>
+                <S100FC:spatialReferenceSystem>
+                    ${spatialReferenceCode ? `<S100FC:Coordinate Reference System>${spatialReferenceCode}</S100FC:Coordinate Reference System>` : ''}
+                    ${spatialReferenceVersion ? `<S100FC:version>${spatialReferenceVersion}</S100FC:version>` : ''}
+                </S100FC:spatialReferenceSystem>
             </S100FC:spatialCoverage>`;
     }
 
