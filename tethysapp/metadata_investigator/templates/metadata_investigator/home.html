@@ -56,18 +56,16 @@
             <form>
                 <div class="mb-3">
                     <label for="metadata-identifier" style="font-weight: bold;">Metadata Identifier <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="metadata-identifier" placeholder="Enter Metadata Identifier" required>
-                    <small class="form-text text-muted" style="font-style: italic;">(A unique identifier related to the dataset, could be universally unique identifier (UUID), globally unique identifier (GUID), or a well-defined string from your data system).</small>
+                    <input type="text" class="form-control" id="metadata-identifier" placeholder="A unique identifier related to the dataset, could be universally unique identifier (UUID), globally unique identifier (GUID), or a well-defined string from your data system" required>
                     <button type="button" class="btn btn-secondary btn-sm mt-1" onclick="generateUUID()">Generate UUID</button>
                 </div>
                 <div class="mb-3">
-                    <label for="title" style="font-weight: bold;">Dataset Title (A good title includes what, where, and when.) <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="title" placeholder="Enter Title" required>
+                    <label for="title" style="font-weight: bold;">Dataset Title <span style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="title" placeholder="A good title includes what, where, and when " required>
                 </div>
                 <div class="mb-3">
                     <label for="abstract" style="font-weight: bold;">Abstract <span style="color: red;">*</span></label>
-                    <textarea class="form-control" id="abstract" rows="3" placeholder="Enter Abstract" required></textarea>
-                    <small class="form-text text-muted" style="font-style: italic;">(Provide a description of the dataset)</small>
+                    <textarea class="form-control" id="abstract" rows="3" placeholder="Provide a description of the dataset" required></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="publication-date" style="font-weight: bold;">Publication Date <span style="color: red;">*</span></label>
@@ -108,8 +106,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="online-link" style="font-weight: bold;">Online link to the Dataset</label>
-                    <input type="url" class="form-control" id="online-link" placeholder="Enter URLs separated by commas">
-                    <small class="form-text text-muted" style="font-style: italic;">(Is there a link to the data or the agency that produced it? If so, provide the URL(s). Please use commas to separate multiple URLs).</small>
+                    <input type="url" class="form-control" id="online-link" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s). Please use commas to separate multiple URLs">
                 </div>
                 <div class="mb-3">
                     <label for="keywords" style="font-weight: bold;">Keywords</label>
@@ -140,8 +137,9 @@
             </div>
             <form>
                 <div class="mb-3">
-                    <label for="scope-level" class="form-label" style="font-weight: bold;">Data Quality Scope (Specific data to which the quality information applies)</label>
+                    <label for="scope-level" class="form-label" style="font-weight: bold;">Data Quality Scope</label>
                     <select class="form-select" id="scope-level">
+                        <option value="" disabled selected>Select the specific data scope to which the quality information applies</option>
                         <option value="Dataset">Dataset</option>
                         <option value="Series">Series</option>
                         <option value="Feature">Feature</option>
@@ -150,22 +148,23 @@
                         <option value="AttributeType">AttributeType</option>
                         <option value="Tile">Tile</option>
                     </select>
+<!--                    <input type="text" class="form-control" placeholder="Specific data to which the quality information applies">-->
                 </div>
                 <div class="mb-3">
-                    <label for="data-lineage-summary" class="form-label" style="font-weight: bold;">Data Lineage Summary (How the dataset was created, including its origin, processes, and transformations?)</label>
-                    <textarea class="form-control" id="data-lineage-summary" rows="3" placeholder="Describe the data lineage"></textarea>
+                    <label for="data-lineage-summary" class="form-label" style="font-weight: bold;">Data Lineage Summary</label>
+                    <textarea class="form-control" id="data-lineage-summary" rows="3" placeholder="How the dataset was created, including its origin, processes, and transformations?"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="process-step" class="form-label" style="font-weight: bold;">Process Step (Describe the methods performed to collect or generate the data. Provide as much detail as possible)</label>
-                    <textarea class="form-control" id="process-step" rows="3" placeholder="Describe the process step"></textarea>
+                    <label for="process-step" class="form-label" style="font-weight: bold;">Process Step </label>
+                    <textarea class="form-control" id="process-step" rows="3" placeholder="Describe the methods performed to collect or generate the data. Provide as much detail as possible"></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="process-date" class="form-label" style="font-weight: bold;">Process Date (YYYYMMDD)</label>
-                    <input type="text" class="form-control" id="process-date" placeholder="Enter Process Date">
+                    <label for="process-date" class="form-label" style="font-weight: bold;">Process Date </label>
+                    <input type="text" class="form-control" id="process-date" placeholder="Enter Process Date in the format YYYYMMDD">
                 </div>
                 <div class="mb-3">
-                    <label for="process-step-contact" class="form-label" style="font-weight: bold;">Process Step Contact (Is there a contact person or agency for this processing step?)</label>
-                    <input type="text" class="form-control" id="process-step-contact" placeholder="Enter Process Step Contact">
+                    <label for="process-step-contact" class="form-label" style="font-weight: bold;">Process Step Contact </label>
+                    <input type="text" class="form-control" id="process-step-contact" placeholder="Is there a contact person or agency for this processing step?">
                 </div>
                 <div class="mb-3">
                     <label for="sources-used" class="form-label" style="font-weight: bold;">Sources Used to Create the Dataset</label>
@@ -175,16 +174,16 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="data-source-title" class="form-label" style="font-weight: bold;">Data Source Title (A good title includes what, where, and when)</label>
-                    <input type="text" class="form-control" id="data-source-title" placeholder="Enter Data Source Title">
+                    <label for="data-source-title" class="form-label" style="font-weight: bold;">Data Source Title </label>
+                    <input type="text" class="form-control" id="data-source-title" placeholder="A good title includes what, where, and when">
                 </div>
                 <div class="mb-3">
-                    <label for="online-link-data-source" class="form-label" style="font-weight: bold;">Online link to the Data Source (Is there a link to the data or the agency that produced it? If so, provide the URL(s))</label>
-                    <input type="url" class="form-control" id="online-link-data-source" placeholder="Enter URLs separated by commas">
+                    <label for="online-link-data-source" class="form-label" style="font-weight: bold;">Online link to the Data Source </label>
+                    <input type="url" class="form-control" id="online-link-data-source" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s) separated by commas">
                 </div>
                 <div class="mb-3">
-                    <label for="data-accuracy-report" class="form-label" style="font-weight: bold;">Data Accuracy Report (How accurate are the values in the dataset relative to “true” values? Please describe any tests or methods used to ensure quality /accuracy in the data.)</label>
-                    <textarea class="form-control" id="data-accuracy-report" rows="3" placeholder="Describe the data accuracy"></textarea>
+                    <label for="data-accuracy-report" class="form-label" style="font-weight: bold;">Data Accuracy Report </label>
+                    <textarea class="form-control" id="data-accuracy-report" rows="3" placeholder="How accurate are the values in the dataset relative to “true” values? Please describe any tests or methods used to ensure quality/accuracy in the data."></textarea>
                 </div>
             </form>
         </div>
@@ -279,16 +278,16 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="address1" style="font-weight: bold;">Address 1 (Number or Street) <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Address 1">
+                        <label for="address1" style="font-weight: bold;">Address 1 <span style="color: red;">*</span></label>
+                        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Address 1(Number or Street)">
                     </div>
                     <div class="form-group">
-                        <label for="address2" style="font-weight: bold;">Address 2 (If Applicable)</label>
-                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Address 2">
+                        <label for="address2" style="font-weight: bold;">Address 2 </label>
+                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Address 2(If Applicable)">
                     </div>
                     <div class="form-group">
-                        <label for="address3" style="font-weight: bold;">Address 3 (If Applicable)</label>
-                        <input type="text" class="form-control" id="address3" name="address3" placeholder="Enter Address 3">
+                        <label for="address3" style="font-weight: bold;">Address 3 </label>
+                        <input type="text" class="form-control" id="address3" name="address3" placeholder="Enter Address 3(If Applicable)">
                     </div>
                     <div class="form-group">
                         <label for="city" style="font-weight: bold;">City</label>
