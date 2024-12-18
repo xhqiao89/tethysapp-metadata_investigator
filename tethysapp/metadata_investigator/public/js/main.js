@@ -51,8 +51,6 @@ function downloadMetadata() {
     const keywords = document.getElementById('keywords').value;
     const dataAccessConstraint = document.getElementById('data-access-constraint').value;
     const dataUseConstraints = document.getElementById('data-use-constraints').value;
-    const dataFees = document.getElementById('data-fees').value;
-
     //input values of data quality tab
     const scopeLevel = document.getElementById('scope-level').value;
     const lineageSummary = document.getElementById('data-lineage-summary').value;
@@ -112,8 +110,7 @@ function downloadMetadata() {
             <S100FC:onlineLink>${onlineLink}</S100FC:onlineLink>
             <S100FC:keywords>${keywords}</S100FC:keywords>
             <S100FC:dataAccessConstraint>${dataAccessConstraint}</S100FC:dataAccessConstraint>
-            <S100FC:dataUseConstraints>${dataUseConstraints}</S100FC:dataUseConstraints>
-            <S100FC:dataFees>${dataFees}</S100FC:dataFees>`;
+            <S100FC:dataUseConstraints>${dataUseConstraints}</S100FC:dataUseConstraints>;
 
     // Include the data quality section only if any optional field is filled
     if (scopeLevel || lineageSummary || processStep || processDate || processStepContact || sourcesUsed || dataSourceTitle || dataSourceUrl || dataAccuracyReport) {
