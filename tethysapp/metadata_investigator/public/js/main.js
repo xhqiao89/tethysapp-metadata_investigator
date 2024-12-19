@@ -344,11 +344,16 @@ function downloadMetadata() {
 
 
 
+    // Filename based on the dataset title
+    const sanitizedTitle = title.replace(/\s+/g, '_');  // Replace spaces with underscores
+    const filename = sanitizedTitle + '_metadata.xml';
+
+    // Create the Blob and download link
     const blob = new Blob([xmlContent], {type: 'application/xml'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'metadata.xml';
+    a.download = filename;  // Use the sanitized title as the filename
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
