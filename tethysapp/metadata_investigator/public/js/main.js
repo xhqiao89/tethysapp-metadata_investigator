@@ -17,9 +17,10 @@ function getMissingFields() {
     const requiredIds = [
         'metadata-identifier', 'title', 'abstract', 'publication-date',
         'dataset-format', 'topic-category',
-        'descriptionGeographicExtent', 'code',
+        'descriptionGeographicExtent',
         'westBoundLongitude', 'eastBoundLongitude', 'northBoundLatitude', 'southBoundLatitude',
-        'organizationName', 'telephoneNumber', 'address1', 'zipcode'
+        'organizationName', 'telephoneNumber', 'address1', 'zipcode',
+        'city', 'stateProvince', 'country'
     ];
 
     let missingFields = [];
@@ -50,8 +51,6 @@ function downloadMetadata() {
     const keywords = document.getElementById('keywords').value;
     const dataAccessConstraint = document.getElementById('data-access-constraint').value;
     const dataUseConstraints = document.getElementById('data-use-constraints').value;
-    const dataFees = document.getElementById('data-fees').value;
-
     //input values of data quality tab
     const scopeLevel = document.getElementById('scope-level').value;
     const lineageSummary = document.getElementById('data-lineage-summary').value;
@@ -65,13 +64,12 @@ function downloadMetadata() {
 
     //input values of spatial coverage
     const geographicDescription = document.getElementById('descriptionGeographicExtent').value;
-    const spatialReferenceCode = document.getElementById('code').value;
-    const spatialReferenceCodeSpace = document.getElementById('codeSpace').value;
-    const spatialReferenceVersion = document.getElementById('version').value;
     const west = document.getElementById('westBoundLongitude').value;
     const east = document.getElementById('eastBoundLongitude').value;
     const north = document.getElementById('northBoundLatitude').value;
     const south = document.getElementById('southBoundLatitude').value;
+    const spatialReferenceCode = document.getElementById('crs').value;
+    const spatialReferenceVersion = document.getElementById('version').value;
 
     //input values of metadata reference form
     const organization = document.getElementById('organizationName').value;
@@ -87,7 +85,6 @@ function downloadMetadata() {
     const state = document.getElementById('stateProvince').value;
     const zipcode = document.getElementById('zipcode').value;
     const country = document.getElementById('country').value;
-    const addressType = document.getElementById('addressType').value;
 
 //    console.log(`metadataId: ${metadataId}`);
 //    console.log(`title: ${title}`);
@@ -103,83 +100,260 @@ function downloadMetadata() {
 
     //Begin building XML content
     let xmlContent = `
-        <S100FC:S100_FC_FeatureCatalogue xmlns:S100FC="http://www.iho.int/S100FC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.iho.int/S100FC/5.0 S100FC.xsd">
-            <S100FC:metadataId>${metadataId}</S100FC:metadataId>
-            <S100FC:title>${title}</S100FC:title>
-            <S100FC:abstract>${abstract}</S100FC:abstract>
-            <S100FC:metadataDate>${metadataDate}</S100FC:metadataDate>
-            <S100FC:datasetFormat>${datasetFormat}</S100FC:datasetFormat>
-            <S100FC:topicCategory>${topicCategory}</S100FC:topicCategory>
-            <S100FC:onlineLink>${onlineLink}</S100FC:onlineLink>
-            <S100FC:keywords>${keywords}</S100FC:keywords>
-            <S100FC:dataAccessConstraint>${dataAccessConstraint}</S100FC:dataAccessConstraint>
-            <S100FC:dataUseConstraints>${dataUseConstraints}</S100FC:dataUseConstraints>
-            <S100FC:dataFees>${dataFees}</S100FC:dataFees>`;
+    <S100FC:MD_Metadata xmlns:S100FC="http://www.iho.int/S100FC" xmlns:gco="http://www.isotc211.org/2005/gco">
+        <!-- Metadata Identifier -->
+        <S100FC:metadataIdentifier>
+            <gco:CharacterString>${metadataId}</gco:CharacterString>
+        </S100FC:metadataIdentifier>
 
-    // Include the data quality section only if any optional field is filled
-    if (scopeLevel || lineageSummary || processStep || processDate || processStepContact || sourcesUsed || dataSourceTitle || dataSourceUrl || dataAccuracyReport) {
-        xmlContent += `
-            <S100FC:dataQuality>
-                ${scopeLevel ? `<S100FC:scopeLevel>${scopeLevel}</S100FC:scopeLevel>` : ''}
-                ${lineageSummary ? `<S100FC:lineageSummary>${lineageSummary}</S100FC:lineageSummary>` : ''}
-                ${processStep ? `<S100FC:processStep>${processStep}</S100FC:processStep>` : ''}
-                ${processDate ? `<S100FC:processDate>${processDate}</S100FC:processDate>` : ''}
-                ${processStepContact ? `<S100FC:processStepContact>${processStepContact}</S100FC:processStepContact>` : ''}
-                ${sourcesUsed ? `<S100FC:sourcesUsed>${sourcesUsed}</S100FC:sourcesUsed>` : ''}
-                ${dataSourceTitle ? `<S100FC:dataSourceTitle>${dataSourceTitle}</S100FC:dataSourceTitle>` : ''}
-                ${dataSourceUrl ? `<S100FC:dataSourceUrl>${dataSourceUrl}</S100FC:dataSourceUrl>` : ''}
-                ${dataAccuracyReport ? `<S100FC:dataAccuracyReport>${dataAccuracyReport}</S100FC:dataAccuracyReport>` : ''}
-            </S100FC:dataQuality>`;
-    }
+        <!-- Dataset Identification -->
+        <S100FC:identificationInfo>
+            <S100FC:MD_DataIdentification>
+                <S100FC:citation>
+                    <S100FC:CI_Citation>
+                        <S100FC:title>
+                            <gco:CharacterString>${title}</gco:CharacterString>
+                        </S100FC:title>
+                        <S100FC:date>
+                            <S100FC:CI_Date>
+                                <S100FC:date>
+                                    <gco:Date>${metadataDate}</gco:Date>
+                                </S100FC:date>
+                            </S100FC:CI_Date>
+                        </S100FC:date>
+                    </S100FC:CI_Citation>
+                </S100FC:citation>
+                <S100FC:abstract>
+                    <gco:CharacterString>${abstract}</gco:CharacterString>
+                </S100FC:abstract>
 
-    // Include the spatial coverage section only if any optional field is filled
-    if (geographicDescription || spatialReferenceCode || spatialReferenceCodeSpace || spatialReferenceVersion || west || east || north || south) {
-        xmlContent += `
-            <S100FC:spatialCoverage>
-                ${geographicDescription ? `<S100FC:geographicDescription>${geographicDescription}</S100FC:geographicDescription>` : ''}
-                <S100FC:spatialReferenceSystem>
-                    ${spatialReferenceCode ? `<S100FC:code>${spatialReferenceCode}</S100FC:code>` : ''}
-                    ${spatialReferenceCodeSpace ? `<S100FC:codeSpace>${spatialReferenceCodeSpace}</S100FC:codeSpace>` : ''}
-                    ${spatialReferenceVersion ? `<S100FC:version>${spatialReferenceVersion}</S100FC:version>` : ''}
-                </S100FC:spatialReferenceSystem>
-                <S100FC:boundingCoordinates>
-                    ${west ? `<S100FC:west>${west}</S100FC:west>` : ''}
-                    ${east ? `<S100FC:east>${east}</S100FC:east>` : ''}
-                    ${north ? `<S100FC:north>${north}</S100FC:north>` : ''}
-                    ${south ? `<S100FC:south>${south}</S100FC:south>` : ''}
-                </S100FC:boundingCoordinates>
-            </S100FC:spatialCoverage>`;
-    }
+                ${keywords ? `
+                <S100FC:descriptiveKeywords>
+                    <S100FC:MD_Keywords>
+                        ${keywords.split(',').map(keyword => `
+                            <S100FC:keyword>
+                                <gco:CharacterString>${keyword.trim()}</gco:CharacterString>
+                            </S100FC:keyword>
+                        `).join('')}
+                    </S100FC:MD_Keywords>
+                </S100FC:descriptiveKeywords>` : ''}
 
-    // Include the contact section only if any optional field is filled
-    if (organization || contactPerson || positionTitle || telephone || faxNumber || email || address1 || address2 || address3 || city || state || zipcode || country || addressType) {
-        xmlContent += `
-            <S100FC:contact>
-                ${organization ? `<S100FC:organization>${organization}</S100FC:organization>` : ''}
-                ${contactPerson ? `<S100FC:contactPerson>${contactPerson}</S100FC:contactPerson>` : ''}
-                ${positionTitle ? `<S100FC:positionTitle>${positionTitle}</S100FC:positionTitle>` : ''}
-                ${telephone ? `<S100FC:telephone>${telephone}</S100FC:telephone>` : ''}
-                ${faxNumber ? `<S100FC:faxNumber>${faxNumber}</S100FC:faxNumber>` : ''}
-                ${email ? `<S100FC:email>${email}</S100FC:email>` : ''}
-                ${address1 ? `<S100FC:address1>${address1}</S100FC:address1>` : ''}
-                ${address2 ? `<S100FC:address2>${address2}</S100FC:address2>` : ''}
-                ${address3 ? `<S100FC:address3>${address3}</S100FC:address3>` : ''}
-                ${city ? `<S100FC:city>${city}</S100FC:city>` : ''}
-                ${state ? `<S100FC:state>${state}</S100FC:state>` : ''}
-                ${zipcode ? `<S100FC:zipcode>${zipcode}</S100FC:zipcode>` : ''}
-                ${country ? `<S100FC:country>${country}</S100FC:country>` : ''}
-                ${addressType ? `<S100FC:addressType>${addressType}</S100FC:addressType>` : ''}
-            </S100FC:contact>`;
-    }
+                ${dataAccessConstraint ? `
+                <S100FC:resourceConstraints>
+                    <S100FC:MD_Constraints>
+                        <S100FC:accessLimitations>
+                            <gco:CharacterString>${dataAccessConstraint}</gco:CharacterString>
+                        </S100FC:accessLimitations>
+                        <S100FC:useLimitations>
+                            <gco:CharacterString>${dataUseConstraints}</gco:CharacterString>
+                        </S100FC:useLimitations>
+                    </S100FC:MD_Constraints>
+                </S100FC:resourceConstraints>` : ''}
 
-    xmlContent += `
-        </S100FC:S100_FC_FeatureCatalogue>`;
+                <!-- Data Format -->
+                <S100FC:distributionFormat>
+                    <S100FC:MD_Format>
+                        <S100FC:name>
+                            <gco:CharacterString>${datasetFormat}</gco:CharacterString>
+                        </S100FC:name>
+                    </S100FC:MD_Format>
+                </S100FC:distributionFormat>
 
+                <!-- Data URL -->
+                ${onlineLink ? `
+                <S100FC:transferOptions>
+                    <S100FC:MD_DigitalTransferOptions>
+                        <S100FC:onLine>
+                            <S100FC:CI_OnlineResource>
+                                <S100FC:linkage>
+                                    <gco:CharacterString>${onlineLink}</gco:CharacterString>
+                                </S100FC:linkage>
+                            </S100FC:CI_OnlineResource>
+                        </S100FC:onLine>
+                    </S100FC:MD_DigitalTransferOptions>
+                </S100FC:transferOptions>` : ''}
+
+                <!-- Spatial Coverage -->
+                ${geographicDescription || (west || east || north || south) ? `
+                <S100FC:extent>
+                    <S100FC:EX_Extent>
+                        ${geographicDescription ? `
+                        <S100FC:description>
+                            <gco:CharacterString>${geographicDescription}</gco:CharacterString>
+                        </S100FC:description>` : ''}
+                        <S100FC:geographicElement>
+                            <S100FC:EX_GeographicBoundingBox>
+                                ${west ? `<S100FC:westBoundLongitude><gco:Decimal>${west}</gco:Decimal></S100FC:westBoundLongitude>` : ''}
+                                ${east ? `<S100FC:eastBoundLongitude><gco:Decimal>${east}</gco:Decimal></S100FC:eastBoundLongitude>` : ''}
+                                ${north ? `<S100FC:northBoundLatitude><gco:Decimal>${north}</gco:Decimal></S100FC:northBoundLatitude>` : ''}
+                                ${south ? `<S100FC:southBoundLatitude><gco:Decimal>${south}</gco:Decimal></S100FC:southBoundLatitude>` : ''}
+                            </S100FC:EX_GeographicBoundingBox>
+                        </S100FC:geographicElement>
+                    </S100FC:EX_Extent>
+                </S100FC:extent>` : ''}
+
+                <!-- Coordinate Reference System -->
+                ${spatialReferenceCode ? `
+                <S100FC:referenceSystemInfo>
+                    <S100FC:MD_ReferenceSystem>
+                        <S100FC:referenceSystemIdentifier>
+                            <S100FC:RS_Identifier>
+                                <S100FC:code>
+                                    <gco:CharacterString>${spatialReferenceCode}</gco:CharacterString>
+                                </S100FC:code>
+                                ${spatialReferenceVersion ? `
+                                <S100FC:version>
+                                    <gco:CharacterString>${spatialReferenceVersion}</gco:CharacterString>
+                                </S100FC:version>` : ''}
+                            </S100FC:RS_Identifier>
+                        </S100FC:referenceSystemIdentifier>
+                    </S100FC:MD_ReferenceSystem>
+                </S100FC:referenceSystemInfo>` : ''}
+
+            </S100FC:MD_DataIdentification>
+        </S100FC:identificationInfo>
+
+        <!-- Data Quality Information -->
+        ${scopeLevel || lineageSummary || processStep || processDate || processStepContact || sourcesUsed || dataSourceTitle || dataSourceUrl || dataAccuracyReport ? `
+        <S100FC:dataQualityInfo>
+            <S100FC:DQ_DataQuality>
+                ${scopeLevel ? `
+                <S100FC:scope>
+                    <S100FC:DQ_Scope>
+                        <S100FC:level>
+                            <gco:CharacterString>${scopeLevel}</gco:CharacterString>
+                        </S100FC:level>
+                    </S100FC:DQ_Scope>
+                </S100FC:scope>` : ''}
+
+                ${lineageSummary ? `
+                <S100FC:lineage>
+                    <S100FC:LI_Lineage>
+                        <S100FC:statement>
+                            <gco:CharacterString>${lineageSummary}</gco:CharacterString>
+                        </S100FC:statement>
+                    </S100FC:LI_Lineage>
+                </S100FC:lineage>` : ''}
+
+                ${processStep ? `
+                <S100FC:processStep>
+                    <S100FC:LI_ProcessStep>
+                        <S100FC:description>
+                            <gco:CharacterString>${processStep}</gco:CharacterString>
+                        </S100FC:description>
+                        ${processDate ? `
+                        <S100FC:date>
+                            <gco:Date>${processDate}</gco:Date>
+                        </S100FC:date>` : ''}
+                        ${processStepContact ? `
+                        <S100FC:processor>
+                            <S100FC:CI_ResponsibleParty>
+                                <S100FC:individualName>
+                                    <gco:CharacterString>${processStepContact}</gco:CharacterString>
+                                </S100FC:individualName>
+                            </S100FC:CI_ResponsibleParty>
+                        </S100FC:processor>` : ''}
+                    </S100FC:LI_ProcessStep>
+                </S100FC:processStep>` : ''}
+
+                ${sourcesUsed ? `
+                <S100FC:source>
+                    <S100FC:LI_Source>
+                        <S100FC:title>
+                            <gco:CharacterString>${sourcesUsed}</gco:CharacterString>
+                        </S100FC:title>
+                    </S100FC:LI_Source>
+                </S100FC:source>` : ''}
+
+                ${dataAccuracyReport ? `
+                <S100FC:report>
+                    <S100FC:DQ_Element>
+                        <S100FC:abstract>
+                            <gco:CharacterString>${dataAccuracyReport}</gco:CharacterString>
+                        </S100FC:abstract>
+                    </S100FC:DQ_Element>
+                </S100FC:report>` : ''}
+            </S100FC:DQ_DataQuality>
+        </S100FC:dataQualityInfo>` : ''}
+
+        <!-- Metadata Contact -->
+        ${organization || contactPerson || positionTitle || telephone || faxNumber || email || address1 || address2 || address3 || city || state || zipcode || country ? `
+        <S100FC:contact>
+            <S100FC:CI_ResponsibleParty>
+                ${contactPerson ? `
+                <S100FC:individualName>
+                    <gco:CharacterString>${contactPerson}</gco:CharacterString>
+                </S100FC:individualName>` : ''}
+                ${positionTitle ? `
+                <S100FC:positionName>
+                    <gco:CharacterString>${positionTitle}</gco:CharacterString>
+                </S100FC:positionName>` : ''}
+                ${telephone ? `
+                <S100FC:contactInfo>
+                    <S100FC:CI_Contact>
+                        <S100FC:phone>
+                            <S100FC:CI_Telephone>
+                                <gco:CharacterString>${telephone}</gco:CharacterString>
+                            </S100FC:CI_Telephone>
+                        </S100FC:phone>
+                    </S100FC:CI_Contact>
+                </S100FC:contactInfo>` : ''}
+                ${faxNumber ? `
+                <S100FC:faxNumber>
+                    <gco:CharacterString>${faxNumber}</gco:CharacterString>
+                </S100FC:faxNumber>` : ''}
+                ${email ? `
+                <S100FC:email>
+                    <gco:CharacterString>${email}</gco:CharacterString>
+                </S100FC:email>` : ''}
+                ${address1 ? `
+                <S100FC:address1>
+                    <gco:CharacterString>${address1}</gco:CharacterString>
+                </S100FC:address1>` : ''}
+                ${address2 ? `
+                <S100FC:address2>
+                    <gco:CharacterString>${address2}</gco:CharacterString>
+                </S100FC:address2>` : ''}
+                ${address3 ? `
+                <S100FC:address3>
+                    <gco:CharacterString>${address3}</gco:CharacterString>
+                </S100FC:address3>` : ''}
+                ${city ? `
+                <S100FC:city>
+                    <gco:CharacterString>${city}</gco:CharacterString>
+                </S100FC:city>` : ''}
+                ${state ? `
+                <S100FC:state>
+                    <gco:CharacterString>${state}</gco:CharacterString>
+                </S100FC:state>` : ''}
+                ${zipcode ? `
+                <S100FC:zipcode>
+                    <gco:CharacterString>${zipcode}</gco:CharacterString>
+                </S100FC:zipcode>` : ''}
+                ${country ? `
+                <S100FC:country>
+                    <gco:CharacterString>${country}</gco:CharacterString>
+                </S100FC:country>` : ''}
+            </S100FC:CI_ResponsibleParty>
+        </S100FC:contact>` : ''}
+
+    </S100FC:MD_Metadata>
+`;
+
+
+
+
+
+    // Filename based on the dataset title
+    const sanitizedTitle = title.replace(/\s+/g, '_');  // Replace spaces with underscores
+    const filename = sanitizedTitle + '_metadata.xml';
+
+    // Create the Blob and download link
     const blob = new Blob([xmlContent], {type: 'application/xml'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'metadata.xml';
+    a.download = filename;  // Use the sanitized title as the filename
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
