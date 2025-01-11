@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:S100FC="http://www.iho.int/S100FC" targetNamespace="http://www.iho.int/S100FC" elementFormDefault="qualified">
+
+  <xs:element name="MD_Metadata">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Metadata Identifier -->
+        <xs:element name="metadataIdentifier">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CharacterString" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Dataset Identification -->
+        <xs:element name="identificationInfo">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MD_DataIdentification">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="citation">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="CI_Citation">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="title">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="date">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CI_Date">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="date">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Date" type="xs:date"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Abstract -->
+                    <xs:element name="abstract">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="CharacterString" type="xs:string"/>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Descriptive Keywords -->
+                    <xs:element name="descriptiveKeywords" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MD_Keywords">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="keyword" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Resource Constraints -->
+                    <xs:element name="resourceConstraints" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MD_Constraints">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="accessLimitations">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="useLimitations">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Distribution Format -->
+                    <xs:element name="distributionFormat">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MD_Format">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="name">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Data URL -->
+                    <xs:element name="transferOptions" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MD_DigitalTransferOptions">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="onLine">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CI_OnlineResource">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="linkage">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="CharacterString" type="xs:string"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Spatial Coverage -->
+                    <xs:element name="extent" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="EX_Extent">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="description" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="CharacterString" type="xs:string"/>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                                <xs:element name="geographicElement">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="EX_GeographicBoundingBox">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="westBoundLongitude" minOccurs="0">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Decimal" type="xs:decimal"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="eastBoundLongitude" minOccurs="0">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Decimal" type="xs:decimal"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="northBoundLatitude" minOccurs="0">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Decimal" type="xs:decimal"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="southBoundLatitude" minOccurs="0">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="Decimal" type="xs:decimal"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                    <!-- Coordinate Reference System -->
+                    <xs:element name="referenceSystemInfo" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="MD_ReferenceSystem">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="referenceSystemIdentifier">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="RS_Identifier">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="code">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="CharacterString" type="xs:string"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="version" minOccurs="0">
+                                              <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element name="CharacterString" type="xs:string"/>
+                                                </xs:sequence>
+                                              </xs:complexType>
+                                            </xs:element>
+                                          </xs:sequence>
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Data Quality Information -->
+        <xs:element name="dataQualityInfo" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="DQ_DataQuality">
+                <xs:complexType>
+                  <xs:sequence>
+                    <!-- Additional elements for scope, lineage, and other data quality information -->
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+        <!-- Metadata Contact -->
+        <xs:element name="contact" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CI_ResponsibleParty">
+                <xs:complexType>
+                  <xs:sequence>
+                    <!-- Contact details -->
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

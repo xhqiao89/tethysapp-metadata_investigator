@@ -2,65 +2,224 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "S100FC:S100_FC_FeatureCatalogue": {
+    "MD_Metadata": {
       "type": "object",
       "properties": {
-        "S100FC:name": { "type": "string" },
-        "S100FC:scope": { "type": "string" },
-        "S100FC:fieldOfApplication": { "type": "string" },
-        "S100FC:versionNumber": { "type": "string" },
-        "S100FC:versionDate": { "type": "string" },
-        "S100FC:productId": { "type": "string" },
-        "S100FC:metadataIdentifier": { "type": "string" },
-        "S100FC:title": { "type": "string" },
-        "S100FC:abstract": { "type": "string" },
-        "S100FC:language": { "type": "string" },
-        "S100FC:characterEncoding": { "type": "string" },
-        "S100FC:dataQuality": {
+        "metadataIdentifier": {
           "type": "object",
           "properties": {
-            "S100FC:scopeLevel": { "type": "string" },
-            "S100FC:scopeLevelDescription": { "type": "string" },
-            "S100FC:reportType": { "type": "string" },
-            "S100FC:reportResult": { "type": "string" },
-            "S100FC:lineageStatement": { "type": "string" }
-          }
+            "CharacterString": { "type": "string" }
+          },
+          "required": ["CharacterString"]
         },
-        "S100FC:spatialCoverage": {
+        "identificationInfo": {
           "type": "object",
           "properties": {
-            "S100FC:westBoundLongitude": { "type": "string" },
-            "S100FC:eastBoundLongitude": { "type": "string" },
-            "S100FC:southBoundLatitude": { "type": "string" },
-            "S100FC:northBoundLatitude": { "type": "string" }
-          }
+            "MD_DataIdentification": {
+              "type": "object",
+              "properties": {
+                "citation": {
+                  "type": "object",
+                  "properties": {
+                    "CI_Citation": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          },
+                          "required": ["CharacterString"]
+                        },
+                        "date": {
+                          "type": "object",
+                          "properties": {
+                            "CI_Date": {
+                              "type": "object",
+                              "properties": {
+                                "date": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Date": { "type": "string" }
+                                  },
+                                  "required": ["Date"]
+                                }
+                              },
+                              "required": ["date"]
+                            }
+                          },
+                          "required": ["CI_Date"]
+                        }
+                      },
+                      "required": ["title", "date"]
+                    }
+                  },
+                  "required": ["CI_Citation"]
+                },
+                "abstract": {
+                  "type": "object",
+                  "properties": {
+                    "CharacterString": { "type": "string" }
+                  },
+                  "required": ["CharacterString"]
+                },
+                "descriptiveKeywords": {
+                  "type": "object",
+                  "properties": {
+                    "MD_Keywords": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "keyword": {
+                            "type": "object",
+                            "properties": {
+                              "CharacterString": { "type": "string" }
+                            },
+                            "required": ["CharacterString"]
+                          }
+                        },
+                        "required": ["keyword"]
+                      }
+                    }
+                  }
+                },
+                "resourceConstraints": {
+                  "type": "object",
+                  "properties": {
+                    "MD_Constraints": {
+                      "type": "object",
+                      "properties": {
+                        "accessLimitations": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          }
+                        },
+                        "useLimitations": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "distributionFormat": {
+                  "type": "object",
+                  "properties": {
+                    "MD_Format": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          },
+                          "required": ["CharacterString"]
+                        }
+                      },
+                      "required": ["name"]
+                    }
+                  }
+                }
+              },
+              "required": ["citation", "abstract"]
+            }
+          },
+          "required": ["MD_DataIdentification"]
         },
-        "S100FC:contact": {
+        "dataQualityInfo": {
           "type": "object",
           "properties": {
-            "S100FC:organization": { "type": "string" },
-            "S100FC:contactInfo": { "type": "string" }
+            "DQ_DataQuality": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "type": "object",
+                  "properties": {
+                    "DQ_Scope": {
+                      "type": "object",
+                      "properties": {
+                        "level": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          },
+                          "required": ["CharacterString"]
+                        }
+                      }
+                    }
+                  }
+                },
+                "lineage": {
+                  "type": "object",
+                  "properties": {
+                    "LI_Lineage": {
+                      "type": "object",
+                      "properties": {
+                        "statement": {
+                          "type": "object",
+                          "properties": {
+                            "CharacterString": { "type": "string" }
+                          },
+                          "required": ["CharacterString"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         },
-        "S100FC:individual": {
+        "contact": {
           "type": "object",
           "properties": {
-            "S100FC:name": { "type": "string" },
-            "S100FC:contactInfo": { "type": "string" }
+            "CI_ResponsibleParty": {
+              "type": "object",
+              "properties": {
+                "individualName": {
+                  "type": "object",
+                  "properties": {
+                    "CharacterString": { "type": "string" }
+                  }
+                },
+                "positionName": {
+                  "type": "object",
+                  "properties": {
+                    "CharacterString": { "type": "string" }
+                  }
+                },
+                "contactInfo": {
+                  "type": "object",
+                  "properties": {
+                    "CI_Contact": {
+                      "type": "object",
+                      "properties": {
+                        "phone": {
+                          "type": "object",
+                          "properties": {
+                            "CI_Telephone": {
+                              "type": "object",
+                              "properties": {
+                                "CharacterString": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
-        },
-        "S100FC:classification": { "type": "string" },
-        "S100FC:S100_FC_DefinitionSources": {
-          "type": "object"
-        },
-        "S100FC:S100_FC_SimpleAttributes": {
-          "type": "object"
-        },
-        "S100FC:S100_FC_FeatureTypes": {
-          "type": "object"
         }
-      }
+      },
+      "required": ["metadataIdentifier", "identificationInfo", "dataQualityInfo"]
     }
   },
-  "additionalProperties": false
+  "required": ["MD_Metadata"]
 }

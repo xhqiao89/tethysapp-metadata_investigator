@@ -6,175 +6,154 @@
   <form id="metadata-form">
     {% csrf_token %}
 
-    <h3>General Metadata</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="metadataIdentifier">Metadata Identifier:</label>
-          <input type="text" id="metadataIdentifier" name="metadataIdentifier" value="{{ attributes.metadataIdentifier }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="parentMetadata">Parent Metadata:</label>
-          <input type="text" id="parentMetadata" name="parentMetadata" value="{{ attributes.parentMetadata }}" class="form-control">
-        </div>
-      </div>
-    </div>
-
-    <h3 class="mt-4">Locale Information</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="language">Language:</label>
-          <input type="text" id="language" name="language" value="{{ attributes.language }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="characterEncoding">Character Encoding:</label>
-          <input type="text" id="characterEncoding" name="characterEncoding" value="{{ attributes.characterEncoding }}" class="form-control">
-        </div>
-      </div>
-    </div>
-
-    <h3 class="mt-4">Date and Scope</h3>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="dateInfo">Date Info:</label>
-          <input type="text" id="dateInfo" name="dateInfo" value="{{ attributes.dateInfo }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="resourceScope">Resource Scope:</label>
-          <input type="text" id="resourceScope" name="resourceScope" value="{{ attributes.resourceScope }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="scopeName">Scope Name:</label>
-          <input type="text" id="scopeName" name="scopeName" value="{{ attributes.scopeName }}" class="form-control">
-        </div>
-      </div>
-    </div>
-
-    <h3 class="mt-4">Identification Information</h3>
+    <!-- Identification Information Section -->
+    <h3>Identification Information</h3>
     <div class="form-group">
-      <label for="title">Title:</label>
-      <input type="text" id="title" name="title" value="{{ attributes.title }}" class="form-control">
+      <label for="metadataIdentifier">Metadata Identifier:</label>
+      <input type="text" id="metadataIdentifier" name="metadataIdentifier" value="{{ data.metadataIdentifier }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="title">Dataset Title:</label>
+      <input type="text" id="title" name="title" value="{{ data.title }}" class="form-control">
     </div>
     <div class="form-group">
       <label for="abstract">Abstract:</label>
-      <textarea id="abstract" name="abstract" class="form-control" rows="3">{{ attributes.abstract }}</textarea>
+      <textarea id="abstract" name="abstract" class="form-control" rows="3">{{ data.abstract }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="publicationDate">Publication Date:</label>
+      <input type="text" id="publicationDate" name="publicationDate" value="{{ data.publicationDate }}" class="form-control">
     </div>
     <div class="form-group">
       <label for="topicCategory">Topic Category:</label>
-      <input type="text" id="topicCategory" name="topicCategory" value="{{ attributes.topicCategory }}" class="form-control">
+      <input type="text" id="topicCategory" name="topicCategory" value="{{ data.topicCategory }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="keywords">Keywords:</label>
+      <input type="text" id="keywords" name="keywords" value="{{ data.keywords }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="accessLimitations">Data Access Constraints:</label>
+      <input type="text" id="accessLimitations" name="accessLimitations" value="{{ data.accessLimitations }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="useLimitations">Data Use Constraints:</label>
+      <input type="text" id="useLimitations" name="useLimitations" value="{{ data.useLimitations }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="datasetFormat">Dataset Format:</label>
+      <input type="text" id="datasetFormat" name="datasetFormat" value="{{ data.datasetFormat }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="onlineLinkToDataset">Online link to the Dataset:</label>
+      <input type="text" id="onlineLinkToDataset" name="onlineLinkToDataset" value="{{ data.onlineLinkToDataset }}" class="form-control">
     </div>
 
-    <h3 class="mt-4">Contact Information</h3>
-    {% for key, value in attributes.items %}
-      {% if key|slice:":8" == "contact_" %}
-        <div class="form-group">
-          <label for="{{ key }}">{{ key|cut:"_"|capfirst }}:</label>
-          <input type="text" id="{{ key }}" name="{{ key }}" value="{{ value }}" class="form-control">
-        </div>
-      {% endif %}
-    {% endfor %}
-
-    <h3 class="mt-4">Geographic Extent</h3>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label for="geographicDescription">Geographic Description:</label>
-          <input type="text" id="geographicDescription" name="geographicDescription" value="{{ attributes.geographicDescription }}" class="form-control">
-        </div>
-      </div>
+    <!-- Data Quality Section -->
+    <h3 class="mt-4">Data Quality Information</h3>
+    <div class="form-group">
+      <label for="dataQualityScope">Data Quality Scope:</label>
+      <input type="text" id="dataQualityScope" name="dataQualityScope" value="{{ data.dataQualityScope }}" class="form-control">
     </div>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="form-group">
-          <label for="westBoundLongitude">West Bound Longitude:</label>
-          <input type="text" id="westBoundLongitude" name="westBoundLongitude" value="{{ attributes.westBoundLongitude }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label for="eastBoundLongitude">East Bound Longitude:</label>
-          <input type="text" id="eastBoundLongitude" name="eastBoundLongitude" value="{{ attributes.eastBoundLongitude }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label for="southBoundLatitude">South Bound Latitude:</label>
-          <input type="text" id="southBoundLatitude" name="southBoundLatitude" value="{{ attributes.southBoundLatitude }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="form-group">
-          <label for="northBoundLatitude">North Bound Latitude:</label>
-          <input type="text" id="northBoundLatitude" name="northBoundLatitude" value="{{ attributes.northBoundLatitude }}" class="form-control">
-        </div>
-      </div>
+    <div class="form-group">
+      <label for="dataLineageSummary">Data Lineage Summary:</label>
+      <textarea id="dataLineageSummary" name="dataLineageSummary" class="form-control" rows="3">{{ data.dataLineageSummary }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="processStep">Process Step:</label>
+      <textarea id="processStep" name="processStep" class="form-control" rows="3">{{ data.processStep }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="processDate">Process Date:</label>
+      <input type="text" id="processDate" name="processDate" value="{{ data.processDate }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="processStepContact">Process Step Contact:</label>
+      <input type="text" id="processStepContact" name="processStepContact" value="{{ data.processStepContact }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="processStepContactOrganization">Process Step Contact Organization:</label>
+      <input type="text" id="processStepContactOrganization" name="processStepContactOrganization" value="{{ data.processStepContactOrganization }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="dataSourceTitle">Data Source Title:</label>
+      <input type="text" id="dataSourceTitle" name="dataSourceTitle" value="{{ data.dataSourceTitle }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="onlineLinkToDataSource">Online link to the Data Source:</label>
+      <input type="text" id="onlineLinkToDataSource" name="onlineLinkToDataSource" value="{{ data.onlineLinkToDataSource }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="dataAccuracyReport">Data Accuracy Report:</label>
+      <textarea id="dataAccuracyReport" name="dataAccuracyReport" class="form-control" rows="3">{{ data.dataAccuracyReport }}</textarea>
     </div>
 
-    <h3 class="mt-4">Feature Catalogue Information</h3>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="fc_name">Name:</label>
-          <input type="text" id="fc_name" name="fc_name" value="{{ attributes.fc_name }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="fc_scope">Scope:</label>
-          <input type="text" id="fc_scope" name="fc_scope" value="{{ attributes.fc_scope }}" class="form-control">
-        </div>
-      </div>
+    <!-- Spatial Coverage Section -->
+    <h3 class="mt-4">Spatial Coverage</h3>
+    <div class="form-group">
+      <label for="descriptionOfGeographicExtent">Description of Geographic Extent:</label>
+      <input type="text" id="descriptionOfGeographicExtent" name="descriptionOfGeographicExtent" value="{{ data.descriptionOfGeographicExtent }}" class="form-control">
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="fc_fieldOfApplication">Field of Application:</label>
-          <input type="text" id="fc_fieldOfApplication" name="fc_fieldOfApplication" value="{{ attributes.fc_fieldOfApplication }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="fc_versionNumber">Version Number:</label>
-          <input type="text" id="fc_versionNumber" name="fc_versionNumber" value="{{ attributes.fc_versionNumber }}" class="form-control">
-        </div>
-      </div>
+    <div class="form-group">
+      <label for="boundingBoxCoordinates">Bounding Box Coordinates:</label>
+      <input type="text" id="boundingBoxCoordinates" name="boundingBoxCoordinates" value="{{ data.boundingBoxCoordinates }}" class="form-control">
     </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="fc_versionDate">Version Date:</label>
-          <input type="text" id="fc_versionDate" name="fc_versionDate" value="{{ attributes.fc_versionDate }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="fc_productId">Product ID:</label>
-          <input type="text" id="fc_productId" name="fc_productId" value="{{ attributes.fc_productId }}" class="form-control">
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="fc_classification">Classification:</label>
-          <input type="text" id="fc_classification" name="fc_classification" value="{{ attributes.fc_classification }}" class="form-control">
-        </div>
-      </div>
+    <div class="form-group">
+      <label for="spatialReferenceSystemCode">Spatial Reference System Code:</label>
+      <input type="text" id="spatialReferenceSystemCode" name="spatialReferenceSystemCode" value="{{ data.spatialReferenceSystemCode }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="spatialReferenceSystemVersion">Spatial Reference System Version:</label>
+      <input type="text" id="spatialReferenceSystemVersion" name="spatialReferenceSystemVersion" value="{{ data.spatialReferenceSystemVersion }}" class="form-control">
     </div>
 
+    <!-- Metadata Reference Section -->
+    <h3 class="mt-4">Metadata Reference</h3>
+    <div class="form-group">
+      <label for="organizationName">Organization Name:</label>
+      <input type="text" id="organizationName" name="organizationName" value="{{ data.organizationName }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="contactPerson">Contact Person:</label>
+      <input type="text" id="contactPerson" name="contactPerson" value="{{ data.contactPerson }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="position">Position:</label>
+      <input type="text" id="position" name="position" value="{{ data.position }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="telephone">Telephone:</label>
+      <input type="text" id="telephone" name="telephone" value="{{ data.telephone }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" value="{{ data.email }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="address">Address:</label>
+      <input type="text" id="address" name="address" value="{{ data.address }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city" value="{{ data.city }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="stateProvince">State/Province:</label>
+      <input type="text" id="stateProvince" name="stateProvince" value="{{ data.stateProvince }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="zipcode">Zipcode:</label>
+      <input type="text" id="zipcode" name="zipcode" value="{{ data.zipcode }}" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="country">Country:</label>
+      <input type="text" id="country" name="country" value="{{ data.country }}" class="form-control">
+    </div>
+
+    <!-- Submit Button -->
     <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
   </form>
 
-  <h3 class="mt-5">Full JSON Data</h3>
-  <pre class="bg-light p-3 mt-2"><code>{{ full_json }}</code></pre>
 {% endblock %}
 
 {% block app_actions %}
@@ -182,5 +161,3 @@
     {% gizmo button_group %}
   {% endif %}
 {% endblock %}
-
-
