@@ -332,24 +332,27 @@ def upload_file(request):
                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.postalCode': 'zipcode',
                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.country': 'country',
             }
-
+            # print(list(field_mapping.values()))
             # Traverse the XML tree to extract elements and their text content
             for elem in root.iter():
                 # Check if the tag name exists in the field_mapping using the full tag with namespace
                 tag_name = f'{{{namespaces.get("S100FC")}}}{elem.tag.split("}")[-1]}' if elem.tag.startswith(
                     "{") else elem.tag
-
+                # print(tag_name)
+                tag_name = tag_name[len('{http://www.isotc211.org/2005/gmd}'):]
                 # Check if the tag_name exists in the field_mapping
-                if tag_name in field_mapping:
+                if tag_name in list(field_mapping.values()):
                     # Map the XML tag to the corresponding form field
-                    form_field = field_mapping[tag_name]
-
-                    # Extract text content if it's not just whitespace
-                    text_content = elem.text.strip() if elem.text else None
+                    # form_field = field_mapping[tag_name]
+                    for child in elem:
+                        if child.text:
+                            text_content = child.text
+                            continue
 
                     # If the element has text content, add it to the dictionary
                     if text_content:
-                        extracted_data[form_field] = text_content
+                        print(text_content)
+                        extracted_data[tag_name] = text_content
 
                 # Debugging: print the extracted data to verify it's being parsed correctly
             print(extracted_data)  # Or use logging if preferred
