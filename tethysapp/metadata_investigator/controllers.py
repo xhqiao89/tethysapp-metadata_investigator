@@ -272,6 +272,110 @@ with open(schema_path, 'r') as schema_file:
     json_schema = json.load(schema_file)
 
 
+# @controller(name='upload_file', url='metadata-investigator/upload')
+# def upload_file(request):
+#     if request.method == 'POST' and request.FILES.get('file'):
+#         uploaded_file = request.FILES['file']
+#
+#         # Check if the uploaded file is an XML
+#         if not uploaded_file.name.endswith('.xml'):
+#             return render(request, 'metadata_investigator/home.html', {'error': 'Please upload an XML file.'})
+#
+#         try:
+#             # Parse the XML file
+#             tree = ET.parse(uploaded_file)
+#             root = tree.getroot()
+#
+#             ## Changing xml to JSON
+#             # Convert XML to a Python dictionary using xmltodict
+#             xml_dict = xmltodict.parse(uploaded_file.read())
+#
+#             # Convert the dictionary to JSON (optional: pretty print)
+#             json_data = json.dumps(xml_dict, indent=4)
+#
+#             # Print the JSON data to the console (or log it)
+#             print(json_data)
+#
+#             # Initialize a dictionary to store the extracted data
+#             extracted_data = {}
+#
+#             # Define the full mapping between XML tags and form field names
+#             field_mapping = {
+#                 # Identification section
+#                 'MD_Metadata.metadataIdentifier': 'metadataIdentifier',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.title': 'title',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.abstract': 'abstract',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.date > CI_Date.date': 'publicationDate',
+#                 'MD_Metadata.identificationInfo > MD_Identification.topicCategory': 'topicCategory',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.descriptiveKeywords > MD_Keywords.keyword': 'keywords',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.accessLimitations': 'accessLimitations',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.useLimitations': 'useLimitations',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.distributionFormat > MD_Format.name': 'datasetFormat',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.transferOptions > MD_DigitalTransferOptions.onLine > CI_OnlineResource.linkage': 'onlineLinkToDataset',
+#                 # Data Quality section
+#                 'MD_Metadata.dataQualityInfo > DQ_DataQuality.scope > DQ_Scope.level': 'dataQualityScope',
+#                 'MD_Metadata.lineage > LI_Lineage.statement': 'dataLineageSummary',
+#                 'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.description': 'processStep',
+#                 'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.date': 'processDate',
+#                 'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.individualName': 'processStepContact',
+#                 'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.organisationName': 'processStepContactOrganization',
+#                 'MD_Metadata.lineage > LI_Lineage.source > LI_Source.title': 'dataSourceTitle',
+#                 'MD_Metadata.lineage > LI_Lineage.source > LI_Source.description': 'onlineLinkToDataSource',
+#                 'MD_Metadata.dataQualityInfo > DQ_DataQuality.report > DQ_Element.abstract': 'dataAccuracyReport',
+#
+#                 # Spatial Coverage section
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.description': 'descriptionOfGeographicExtent',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.geographicElement > EX_GeographicBoundingBox': 'boundingBoxCoordinates',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.code': 'spatialReferenceSystemCode',
+#                 'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.version': 'spatialReferenceSystemVersion',
+#
+#                 # Metadata Reference section
+#                 'MD_Metadata.contact > CI_ResponsibleParty.organisationName': 'organizationName',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.individualName': 'contactPerson',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.positionName': 'position',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.phone': 'telephone',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.electronicMailAddress': 'email',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.deliveryPoint': 'address',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.city': 'city',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.state': 'stateProvince',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.postalCode': 'zipcode',
+#                 'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.country': 'country',
+#             }
+#             # print(list(field_mapping.values()))
+#             # Traverse the XML tree to extract elements and their text content
+#             for elem in root.iter():
+#                 # Check if the tag name exists in the field_mapping using the full tag with namespace
+#                 tag_name = f'{{{namespaces.get("S100FC")}}}{elem.tag.split("}")[-1]}' if elem.tag.startswith(
+#                     "{") else elem.tag
+#                 # print(tag_name)
+#                 tag_name = tag_name[len('{http://www.isotc211.org/2005/gmd}'):]
+#                 # Check if the tag_name exists in the field_mapping
+#                 if tag_name in list(field_mapping.values()):
+#                     # Map the XML tag to the corresponding form field
+#                     # form_field = field_mapping[tag_name]
+#                     for child in elem:
+#                         if child.text:
+#                             text_content = child.text
+#                             continue
+#
+#                     # If the element has text content, add it to the dictionary
+#                     if text_content:
+#                         print(text_content)
+#                         extracted_data[tag_name] = text_content
+#
+#                 # Debugging: print the extracted data to verify it's being parsed correctly
+#             print(extracted_data)  # Or use logging if preferred
+#
+#             # Pass the extracted data to the display template
+#             ## Changed to render in the same page
+#             return render(request, 'metadata_investigator/home.html', {'data': extracted_data})
+#
+#         except ET.ParseError:
+#             return render(request, 'metadata_investigator/home.html', {'error': 'Invalid XML format.'})
+#
+#             # If not a POST request or no file is uploaded, render the home page
+#     return render(request, 'metadata_investigator/home.html')
+
 @controller(name='upload_file', url='metadata-investigator/upload')
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
@@ -282,90 +386,120 @@ def upload_file(request):
             return render(request, 'metadata_investigator/home.html', {'error': 'Please upload an XML file.'})
 
         try:
-            # Parse the XML file
-            tree = ET.parse(uploaded_file)
-            root = tree.getroot()
+            # Read the file content into a variable
+            file_content = uploaded_file.read()
 
-            # Initialize a dictionary to store the extracted data
-            extracted_data = {}
+            # Convert XML content to a Python dictionary using xmltodict
+            xml_dict = xmltodict.parse(file_content)
+
+            # Convert the dictionary to JSON (optional: pretty print)
+            json_data = json.dumps(xml_dict, indent=4)
+
+            # Print the JSON data to the console (or log it)
+            print(json_data)
+
+            # Function to remove namespaces and flatten the dictionary
+            def flatten_json(data):
+                """ Flatten a nested dictionary and remove namespaces. """
+                def remove_namespace(key):
+                    """ Remove the namespace (e.g., 'S100FC:', 'gco:') from the key. """
+                    return key.split(":")[-1]
+
+                def flatten(data, parent_key='', result=None):
+                    if result is None:
+                        result = {}
+
+                    if isinstance(data, dict):
+                        for k, v in data.items():
+                            new_key = remove_namespace(k) if parent_key == '' else f"{parent_key}.{remove_namespace(k)}"
+                            flatten(v, new_key, result)
+                    elif isinstance(data, list):
+                        for i, item in enumerate(data):
+                            flatten(item, f"{parent_key}.{i}", result)
+                    else:
+                        result[parent_key] = data
+
+                    return result
+
+                # Start flattening the XML dictionary
+                return flatten(data)
+
+            # Flatten the XML dictionary
+            flattened_data = flatten_json(xml_dict)
+
+            # Print the flattened dictionary for debugging
+            print("Flattened Data:")
+            print(json.dumps(flattened_data, indent=4))
+
+            # Define a function to extract values based on path mapping
+            def extract_value(data_dict, path):
+                keys = path.split(' > ')  # Split the path into components
+                value = data_dict
+                for key in keys:
+                    value = value.get(key, None) if isinstance(value, dict) else None
+                    if value is None:
+                        break
+                return value
+
+            # Test extracting a value for one tag to check if the process works
+            test_path = 'MD_Metadata.metadataIdentifier'
+            test_value = extract_value(flattened_data, test_path)
+            print(f"Test value for '{test_path}': {test_value}")
 
             # Define the full mapping between XML tags and form field names
             field_mapping = {
-                # Identification section
-                'MD_Metadata.metadataIdentifier': 'metadataIdentifier',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.title': 'title',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.abstract': 'abstract',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.date > CI_Date.date': 'publicationDate',
-                'MD_Metadata.identificationInfo > MD_Identification.topicCategory': 'topicCategory',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.descriptiveKeywords > MD_Keywords.keyword': 'keywords',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.accessLimitations': 'accessLimitations',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.useLimitations': 'useLimitations',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.distributionFormat > MD_Format.name': 'datasetFormat',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.transferOptions > MD_DigitalTransferOptions.onLine > CI_OnlineResource.linkage': 'onlineLinkToDataset',
+                # Updated field mapping paths with ".CharacterString"
+                'MD_Metadata.metadataIdentifier.CharacterString': 'metadataIdentifier',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.citation.CI_Citation.title.CharacterString': 'title',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.abstract.CharacterString': 'abstract',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.citation.CI_Citation.date.CI_Date.date.Date': 'publicationDate',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.topicCategory.CharacterString': 'topicCategory',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.descriptiveKeywords.MD_Keywords.keyword.CharacterString': 'keywords',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.resourceConstraints.MD_Constraints.accessLimitations.CharacterString': 'accessLimitations',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.resourceConstraints.MD_Constraints.useLimitations.CharacterString': 'useLimitations',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.distributionFormat.MD_Format.name.CharacterString': 'datasetFormat',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.transferOptions.MD_DigitalTransferOptions.onLine.CI_OnlineResource.linkage.CharacterString': 'onlineLinkToDataset',
 
-                # Data Quality section
-                'MD_Metadata.dataQualityInfo > DQ_DataQuality.scope > DQ_Scope.level': 'dataQualityScope',
-                'MD_Metadata.lineage > LI_Lineage.statement': 'dataLineageSummary',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.description': 'processStep',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.date': 'processDate',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.individualName': 'processStepContact',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.organisationName': 'processStepContactOrganization',
-                'MD_Metadata.lineage > LI_Lineage.source > LI_Source.title': 'dataSourceTitle',
-                'MD_Metadata.lineage > LI_Lineage.source > LI_Source.description': 'onlineLinkToDataSource',
-                'MD_Metadata.dataQualityInfo > DQ_DataQuality.report > DQ_Element.abstract': 'dataAccuracyReport',
+                # Data Quality section (updated with .CharacterString)
+                'MD_Metadata.dataQualityInfo.DQ_DataQuality.scope.DQ_Scope.level.CharacterString': 'dataQualityScope',
+                'MD_Metadata.dataQualityInfo.DQ_DataQuality.lineage.LI_Lineage.statement.CharacterString': 'dataLineageSummary',
+                'MD_Metadata.dataQualityInfo.DQ_DataQuality.source.LI_Source.title.CharacterString': 'dataSourceTitle',
+                'MD_Metadata.dataQualityInfo.DQ_DataQuality.report.DQ_Element.abstract.CharacterString': 'dataAccuracyReport',
 
-                # Spatial Coverage section
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.description': 'descriptionOfGeographicExtent',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.geographicElement > EX_GeographicBoundingBox': 'boundingBoxCoordinates',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.code': 'spatialReferenceSystemCode',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.version': 'spatialReferenceSystemVersion',
+                # Spatial Coverage section (updated with .CharacterString)
+                'MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.description.CharacterString': 'descriptionOfGeographicExtent',
+                'MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.geographicElement.EX_GeographicBoundingBox.westBoundLongitude.Decimal': 'boundingBoxCoordinates',
 
-                # Metadata Reference section
-                'MD_Metadata.contact > CI_ResponsibleParty.organisationName': 'organizationName',
-                'MD_Metadata.contact > CI_ResponsibleParty.individualName': 'contactPerson',
-                'MD_Metadata.contact > CI_ResponsibleParty.positionName': 'position',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.phone': 'telephone',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.electronicMailAddress': 'email',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.deliveryPoint': 'address',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.city': 'city',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.state': 'stateProvince',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.postalCode': 'zipcode',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.country': 'country',
+                # Metadata Reference section (updated with .CharacterString)
+                'MD_Metadata.contact.CI_ResponsibleParty.organisationName.CharacterString': 'organizationName',
+                'MD_Metadata.contact.CI_ResponsibleParty.individualName.CharacterString': 'contactPerson',
+                'MD_Metadata.contact.CI_ResponsibleParty.positionName.CharacterString': 'position',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.phone.CI_Telephone.CharacterString': 'telephone',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.electronicMailAddress.CharacterString': 'email',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.deliveryPoint.CharacterString': 'address',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.city.CharacterString': 'city',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.state.CharacterString': 'stateProvince',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.postalCode.CharacterString': 'zipcode',
+                'MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.address.CI_Address.country.CharacterString': 'country',
             }
-            # print(list(field_mapping.values()))
-            # Traverse the XML tree to extract elements and their text content
-            for elem in root.iter():
-                # Check if the tag name exists in the field_mapping using the full tag with namespace
-                tag_name = f'{{{namespaces.get("S100FC")}}}{elem.tag.split("}")[-1]}' if elem.tag.startswith(
-                    "{") else elem.tag
-                # print(tag_name)
-                tag_name = tag_name[len('{http://www.isotc211.org/2005/gmd}'):]
-                # Check if the tag_name exists in the field_mapping
-                if tag_name in list(field_mapping.values()):
-                    # Map the XML tag to the corresponding form field
-                    # form_field = field_mapping[tag_name]
-                    for child in elem:
-                        if child.text:
-                            text_content = child.text
-                            continue
 
-                    # If the element has text content, add it to the dictionary
-                    if text_content:
-                        print(text_content)
-                        extracted_data[tag_name] = text_content
+            # Extract the data from flattened XML dictionary based on the updated field_mapping
+            extracted_data = {}
+            for xml_path, field_name in field_mapping.items():
+                value = extract_value(flattened_data, xml_path)
+                extracted_data[field_name] = value
+                print(f"Extracted value for {field_name}: {value}")
 
-                # Debugging: print the extracted data to verify it's being parsed correctly
-            print(extracted_data)  # Or use logging if preferred
+            # Print the extracted data dictionary
+            print(extracted_data)
 
-            # Pass the extracted data to the display template
-            return render(request, 'metadata_investigator/display_attributes.html', {'data': extracted_data})
+            # Pass the extracted data and the JSON data to the display template
+            return render(request, 'metadata_investigator/home.html', {'data': extracted_data, 'json_data': json_data})
 
-        except ET.ParseError:
-            return render(request, 'metadata_investigator/home.html', {'error': 'Invalid XML format.'})
+        except Exception as e:
+            return render(request, 'metadata_investigator/home.html', {'error': f'An error occurred: {str(e)}'})
 
-            # If not a POST request or no file is uploaded, render the home page
+    # If not a POST request or no file is uploaded, render the home page
     return render(request, 'metadata_investigator/home.html')
-
-
 
 
