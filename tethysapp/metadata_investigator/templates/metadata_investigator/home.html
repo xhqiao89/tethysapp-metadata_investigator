@@ -56,24 +56,25 @@
             <form>
                 <div class="mb-3">
                     <label for="metadata-identifier" style="font-weight: bold;">Metadata Identifier <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="metadata-identifier" placeholder="A unique identifier related to the dataset, could be universally unique identifier (UUID), globally unique identifier (GUID), or a well-defined string from your data system" required>
+                    <input type="text" class="form-control" id="metadata-identifier" value="{{ data.metadataIdentifier|default:'' }}" placeholder="A unique identifier related to the dataset, could be universally unique identifier (UUID), globally unique identifier (GUID), or a well-defined string from your data system" required>
                     <button type="button" class="btn btn-secondary btn-sm mt-1" onclick="generateUUID()">Generate UUID</button>
                 </div>
                 <div class="mb-3">
                     <label for="title" style="font-weight: bold;">Dataset Title <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="title" placeholder="A good title includes what, where, and when " required>
+                    <input type="text" class="form-control" id="title" value="{{ data.DatasetTitle|default:'' }}" placeholder="A good title includes what, where, and when " required>
                 </div>
                 <div class="mb-3">
                     <label for="abstract" style="font-weight: bold;">Abstract <span style="color: red;">*</span></label>
-                    <textarea class="form-control" id="abstract" rows="3" placeholder="Provide a description of the dataset" required></textarea>
+                    <textarea class="form-control" id="abstract" rows="3" placeholder="Provide a description of the dataset" required>{{ data.IdentificationAbstract|default:'' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="publication-date" style="font-weight: bold;">Publication Date <span style="color: red;">*</span></label>
-                    <input type="text" class="form-control" id="publication-date" placeholder="YYYYMMDD" required>
+                    <input type="text" class="form-control" id="publication-date" value="{{ data.publicationDate|default:'' }}" placeholder="YYYYMMDD" required>
                 </div>
                 <div class="mb-3">
                     <label for="dataset-format" style="font-weight: bold;">Dataset Format <span style="color: red;">*</span></label>
                     <select class="form-control" id="dataset-format" required>
+                        <option value="{{ data.DatasetFormat }}" selected>{{ data.DatasetFormat|default:'Select Format' }}</option>
                         <option value="Vector">Vector (GML, Shapefile, KML/KMZ, ENC)</option>
                         <option value="Raster">Raster and Gridded (GeoTIFF, HDF5, NetCDF, JPEG)</option>
                         <option value="Tabular">Tabular data</option>
@@ -106,19 +107,19 @@
                 </div>
                 <div class="mb-3">
                     <label for="online-link" style="font-weight: bold;">Online link to the Dataset</label>
-                    <input type="url" class="form-control" id="online-link" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s). Please use commas to separate multiple URLs">
+                    <input type="url" class="form-control" id="online-link" value="{{ data.OnlineLinkToDataset|default:'' }}" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s). Please use commas to separate multiple URLs">
                 </div>
                 <div class="mb-3">
                     <label for="keywords" style="font-weight: bold;">Keywords</label>
-                    <input type="text" class="form-control" id="keywords" placeholder="Provide a list of descriptive keywords related to the content of your dataset.">
+                    <input type="text" class="form-control" id="keywords" value="{{ data.IdentificationKeywords|default:'' }}" placeholder="Provide a list of descriptive keywords related to the content of your dataset.">
                 </div>
                 <div class="mb-3">
                     <label for="data-access-constraint" style="font-weight: bold;">Data Access Constraint</label>
-                    <textarea class="form-control" id="data-access-constraint" rows="3" placeholder="Describe any restriction of legal prerequisites for accessing the dataset."></textarea>
+                    <textarea class="form-control" id="data-access-constraint" rows="3" placeholder="Describe any restriction of legal prerequisites for accessing the dataset.">{{ data.DataAccessConstraints|default:'' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="data-use-constraints" style="font-weight: bold;">Data Use Constraints</label>
-                    <textarea class="form-control" id="data-use-constraints" rows="3" placeholder="Describe any restriction of legal prerequisites for using the dataset."></textarea>
+                    <textarea class="form-control" id="data-use-constraints" rows="3" placeholder="Describe any restriction of legal prerequisites for using the dataset.">{{ data.DataUseConstraints|default:'' }}</textarea>
                 </div>
             </form>
         </div>
@@ -135,6 +136,7 @@
                     <label for="scope-level" class="form-label" style="font-weight: bold;">Data Quality Scope</label>
                     <select class="form-select" id="scope-level">
                         <option value="" disabled selected>Select the specific data scope to which the quality information applies</option>
+                        <option value="{{ data.DataQualityScope}}" selected>{{ data.DataQualityScope|default:'Select Format' }}</option>
                         <option value="Dataset">Dataset</option>
                         <option value="Series">Series</option>
                         <option value="Feature">Feature</option>
@@ -147,19 +149,19 @@
                 </div>
                 <div class="mb-3">
                     <label for="data-lineage-summary" class="form-label" style="font-weight: bold;">Data Lineage Summary</label>
-                    <textarea class="form-control" id="data-lineage-summary" rows="3" placeholder="How the dataset was created, including its origin, processes, and transformations?"></textarea>
+                    <textarea class="form-control" id="data-lineage-summary" rows="3" placeholder="How the dataset was created, including its origin, processes, and transformations?">{{ data.LineageStatement|default:'' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="process-step" class="form-label" style="font-weight: bold;">Process Step </label>
-                    <textarea class="form-control" id="process-step" rows="3" placeholder="Describe the methods performed to collect or generate the data. Provide as much detail as possible"></textarea>
+                    <textarea class="form-control" id="process-step" rows="3" placeholder="Describe the methods performed to collect or generate the data. Provide as much detail as possible">{{ data.ProcessStepDescription|default:'' }}</textarea>
                 </div>
                 <div class="mb-3">
                     <label for="process-date" class="form-label" style="font-weight: bold;">Process Date </label>
-                    <input type="text" class="form-control" id="process-date" placeholder="Enter Process Date in the format YYYYMMDD">
+                    <input type="text" class="form-control" id="process-date" value="{{ data.ProcessStepDate|default:'' }}" placeholder="Enter Process Date in the format YYYYMMDD">
                 </div>
                 <div class="mb-3">
                     <label for="process-step-contact" class="form-label" style="font-weight: bold;">Process Step Contact </label>
-                    <input type="text" class="form-control" id="process-step-contact" placeholder="Is there a contact person or agency for this processing step?">
+                    <input type="text" class="form-control" id="process-step-contact" value="{{ data.ProcessorName|default:'' }}" placeholder="Is there a contact person or agency for this processing step?">
                 </div>
                 <div class="mb-3">
                     <label for="sources-used" class="form-label" style="font-weight: bold;">Sources Used to Create the Dataset</label>
@@ -170,15 +172,15 @@
                 </div>
                 <div class="mb-3">
                     <label for="data-source-title" class="form-label" style="font-weight: bold;">Data Source Title </label>
-                    <input type="text" class="form-control" id="data-source-title" placeholder="A good title includes what, where, and when">
+                    <input type="text" class="form-control" id="data-source-title" value="{{ data.SourceTitle|default:'' }}" placeholder="A good title includes what, where, and when">
                 </div>
                 <div class="mb-3">
                     <label for="online-link-data-source" class="form-label" style="font-weight: bold;">Online link to the Data Source </label>
-                    <input type="url" class="form-control" id="online-link-data-source" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s) separated by commas">
+                    <input type="url" class="form-control" id="online-link-data-source" value="{{ data.OnlineLinkToDataset|default:'' }}" placeholder="Is there a link to the data or the agency that produced it? If so, provide the URL(s) separated by commas">
                 </div>
                 <div class="mb-3">
                     <label for="data-accuracy-report" class="form-label" style="font-weight: bold;">Data Accuracy Report </label>
-                    <textarea class="form-control" id="data-accuracy-report" rows="3" placeholder="How accurate are the values in the dataset relative to “true” values? Please describe any tests or methods used to ensure quality/accuracy in the data."></textarea>
+                    <textarea class="form-control" id="data-accuracy-report" rows="3" placeholder="How accurate are the values in the dataset relative to “true” values? Please describe any tests or methods used to ensure quality/accuracy in the data.">{{ data.ReportAbstract|default:'' }}</textarea>
                 </div>
             </form>
         </div>
@@ -195,26 +197,26 @@
             <form>
                 <div class="mb-3">
                     <label for="descriptionGeographicExtent" style="font-weight: bold;">Description of Geographic Extent <span style="color: red;">*</span></label>
-                    <textarea class="form-control" id="descriptionGeographicExtent" name="descriptionGeographicExtent" required placeholder="Enter Description of Geographic Extent"></textarea>
+                    <textarea class="form-control" id="descriptionGeographicExtent" name="descriptionGeographicExtent" required  placeholder="Enter Description of Geographic Extent">{{ data.descriptionOfGeographicExtent|default:'' }}"</textarea>
                 </div>
 
                 <div class="mb-3">
                     <h4>Bounding Coordinates</h4>
                     <div class="form-group">
                         <label for="westBoundLongitude" style="font-weight: bold;">West (-180 - 180) <span style="color: red;">*</span></label>
-                        <input type="number" class="form-control" id="westBoundLongitude" name="westBoundLongitude" required placeholder="-180.0000" min="-180" max="180" step="0.0001">
+                        <input type="number" class="form-control" id="westBoundLongitude" name="westBoundLongitude" value="{{ data.WestBoundLongitude|default:'' }}" required placeholder="-180.0000" min="-180" max="180" step="0.0001">
                     </div>
                     <div class="form-group">
                         <label for="eastBoundLongitude" style="font-weight: bold;">East (-180 - 180) <span style="color: red;">*</span></label>
-                        <input type="number" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" required placeholder="180.0000" min="-180" max="180" step="0.0001">
+                        <input type="number" class="form-control" id="eastBoundLongitude" name="eastBoundLongitude" value="{{ data.EastBoundLongitude|default:'' }}" required placeholder="180.0000" min="-180" max="180" step="0.0001">
                     </div>
                     <div class="form-group">
                         <label for="northBoundLatitude" style="font-weight: bold;">North (-90 - 90) <span style="color: red;">*</span></label>
-                        <input type="number" class="form-control" id="northBoundLatitude" name="northBoundLatitude" required placeholder="90.0000" min="-90" max="90" step="0.0001">
+                        <input type="number" class="form-control" id="northBoundLatitude" name="northBoundLatitude" value="{{ data.NorthBoundLatitude|default:'' }}" required placeholder="90.0000" min="-90" max="90" step="0.0001">
                     </div>
                     <div class="form-group">
                         <label for="southBoundLatitude" style="font-weight: bold;">South (-90 - 90) <span style="color: red;">*</span></label>
-                        <input type="number" class="form-control" id="southBoundLatitude" name="southBoundLatitude" required placeholder="-90.0000" min="-90" max="90" step="0.0001">
+                        <input type="number" class="form-control" id="southBoundLatitude" name="southBoundLatitude" value="{{ data.SouthBoundLatitude|default:'' }}" required placeholder="-90.0000" min="-90" max="90" step="0.0001">
                     </div>
                 </div>
 
@@ -222,11 +224,11 @@
                     <h4>Spatial Reference System</h4>
                     <div class="form-group">
                         <label for="crs" style="font-weight: bold;">Coordinate Reference System </label>
-                        <input type="text" class="form-control" id="crs" name="crs" placeholder="Enter Coordinate Reference System">
+                        <input type="text" class="form-control" id="crs" name="crs" value="{{ data.ReferenceSystemCode|default:'' }}" placeholder="Enter Coordinate Reference System">
                     </div>
                     <div class="form-group">
                         <label for="version" style="font-weight: bold;">Version</label>
-                        <input type="text" class="form-control" id="version" name="version" placeholder="Enter Version">
+                        <input type="text" class="form-control" id="version" name="version" value="{{ data.ReferenceSystemVersion|default:'' }}" placeholder="Enter Version">
                     </div>
                 </div>
 
@@ -249,53 +251,53 @@
                     </div>
                     <div class="form-group">
                         <label for="contactPerson" style="font-weight: bold;">Contact Person</label>
-                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Enter Contact Person">
+                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" value="{{ data.IndividualName|default:'' }}" placeholder="Enter Contact Person">
                     </div>
                     <div class="form-group">
                         <label for="titleOfPosition" style="font-weight: bold;">Title of Position</label>
-                        <input type="text" class="form-control" id="titleOfPosition" name="titleOfPosition" placeholder="Enter Title of Position">
+                        <input type="text" class="form-control" id="titleOfPosition" name="titleOfPosition" value="{{ data.PositionName|default:'' }}" placeholder="Enter Title of Position">
                     </div>
                     <div class="form-group">
                         <label for="telephoneNumber" style="font-weight: bold;">Telephone Number <span style="color: red;">*</span></label>
-                        <input type="tel" class="form-control" id="telephoneNumber" name="telephoneNumber" placeholder="Enter Telephone Number">
+                        <input type="tel" class="form-control" id="telephoneNumber" name="telephoneNumber" value="{{ data.ContactPhone|default:'' }}" placeholder="Enter Telephone Number">
                     </div>
                     <div class="form-group">
                         <label for="faxNumber" style="font-weight: bold;">Fax Number</label>
-                        <input type="tel" class="form-control" id="faxNumber" name="faxNumber" placeholder="Enter Fax Number">
+                        <input type="tel" class="form-control" id="faxNumber" name="faxNumber" value="{{ data.FaxNumber|default:'' }}" placeholder="Enter Fax Number">
                     </div>
                     <div class="form-group">
                         <label for="emailAddress" style="font-weight: bold;">Email Address</label>
-                        <input type="email" class="form-control" id="emailAddress" name="emailAddress" placeholder="Enter Email Address">
+                        <input type="email" class="form-control" id="emailAddress" name="emailAddress" value="{{ data.EmailAddress|default:'' }}" placeholder="Enter Email Address">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="address1" style="font-weight: bold;">Address 1 <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter Address 1(Number or Street)">
+                        <input type="text" class="form-control" id="address1" name="address1" value="{{ data.Address1|default:'' }}" placeholder="Enter Address 1(Number or Street)">
                     </div>
                     <div class="form-group">
                         <label for="address2" style="font-weight: bold;">Address 2 </label>
-                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter Address 2(If Applicable)">
+                        <input type="text" class="form-control" id="address2" name="address2" value="{{ data.Address2|default:'' }}" placeholder="Enter Address 2(If Applicable)">
                     </div>
                     <div class="form-group">
                         <label for="address3" style="font-weight: bold;">Address 3 </label>
-                        <input type="text" class="form-control" id="address3" name="address3" placeholder="Enter Address 3(If Applicable)">
+                        <input type="text" class="form-control" id="address3" name="address3" value="{{ data.Address3|default:'' }}" placeholder="Enter Address 3(If Applicable)">
                     </div>
                     <div class="form-group">
                         <label for="city" style="font-weight: bold;">City <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="city" name="city" required placeholder="Enter City">
+                        <input type="text" class="form-control" id="city" name="city" value="{{ data.City|default:'' }}" required placeholder="Enter City">
                     </div>
                     <div class="form-group">
                         <label for="stateProvince" style="font-weight: bold;">State / Province <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="stateProvince" name="stateProvince" required placeholder="Enter State / Province">
+                        <input type="text" class="form-control" id="stateProvince" name="stateProvince" value="{{ data.StateProvince|default:'' }}" required placeholder="Enter State / Province">
                     </div>
                     <div class="form-group">
                         <label for="zipcode" style="font-weight: bold;">Zipcode <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="zipcode" name="zipcode" required placeholder="Enter Zipcode">
+                        <input type="text" class="form-control" id="zipcode" name="zipcode" value="{{ data.PostalCode|default:'' }}" required placeholder="Enter Zipcode">
                     </div>
                     <div class="form-group">
                         <label for="country" style="font-weight: bold;">Country <span style="color: red;">*</span></label>
-                        <input type="text" class="form-control" id="country" name="country" required placeholder="Enter Country">
+                        <input type="text" class="form-control" id="country" name="country" value="{{ data.Country|default:'' }}" required placeholder="Enter Country">
                     </div>
                 </div>
             </div>
@@ -328,4 +330,5 @@ function generateUUID() {
 {{ block.super }}
 <script src="{{ STATIC_URL }}js/main.js"></script>
 {% endblock %}
+
 
