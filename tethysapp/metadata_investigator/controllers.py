@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from tethys_sdk.gizmos import MapView
+from twisted.python.util import println
 
 
 @controller
@@ -273,99 +274,91 @@ with open(schema_path, 'r') as schema_file:
 
 
 @controller(name='upload_file', url='metadata-investigator/upload')
+
+def flatten_json(data, parent_key='', sep='.', namespace_remove=['S100FC:', 'gco:']):
+    items = {}
+    if isinstance(data, dict):
+        for k, v in data.items():
+            # Remove any unwanted namespaces from the key
+            for ns in namespace_remove:
+                k = k.replace(ns, '')
+            new_key = f"{parent_key}{sep}{k}" if parent_key else k
+            items.update(flatten_json(v, new_key, sep=sep, namespace_remove=namespace_remove))
+    elif isinstance(data, list):
+        for i, item in enumerate(data):
+            items.update(flatten_json(item, f"{parent_key}{sep}{i}", sep=sep, namespace_remove=namespace_remove))
+    else:
+        items[parent_key] = data
+    return items
+
+def remove_xmlns_entries(flattened_data):
+    # Use a dictionary comprehension to filter out unwanted keys(First two entries in dictionary)
+    return {k: v for k, v in flattened_data.items() if "@xmlns" not in k}
+
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
 
-        # Check if the uploaded file is an XML
+        ##If not xml return error
         if not uploaded_file.name.endswith('.xml'):
-            return render(request, 'metadata_investigator/home.html', {'error': 'Please upload an XML file.'})
+            return render(request, 'metadata_investigator/home.html', {'error': 'Please upload an XML file'})
 
-        try:
-            # Parse the XML file
-            tree = ET.parse(uploaded_file)
-            root = tree.getroot()
+        # Converting XML to dictionary
+        file_content = uploaded_file.read()
+        xml_dict = xmltodict.parse(file_content)
+        # print('XML DICT is: ', xml_dict)
 
-            # Initialize a dictionary to store the extracted data
-            extracted_data = {}
+        json_data = json.dumps(xml_dict, indent=4)
+        # println('JSON DATA: ', json_data)
+        flattened_data = flatten_json(xml_dict)
+        clean_data = remove_xmlns_entries(flattened_data)
+        # println('Flattened and clean Data:', clean_data)
 
-            # Define the full mapping between XML tags and form field names
-            field_mapping = {
-                # Identification section
-                'MD_Metadata.metadataIdentifier': 'metadataIdentifier',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.title': 'title',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.abstract': 'abstract',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.citation > CI_Citation.date > CI_Date.date': 'publicationDate',
-                'MD_Metadata.identificationInfo > MD_Identification.topicCategory': 'topicCategory',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.descriptiveKeywords > MD_Keywords.keyword': 'keywords',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.accessLimitations': 'accessLimitations',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.resourceConstraints > MD_Constraints.useLimitations': 'useLimitations',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.distributionFormat > MD_Format.name': 'datasetFormat',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.transferOptions > MD_DigitalTransferOptions.onLine > CI_OnlineResource.linkage': 'onlineLinkToDataset',
+        data_to_send = {
+            'metadataIdentifier': flattened_data.get('MD_Metadata.metadataIdentifier.CharacterString', ''),
+            'DatasetTitle': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.citation.CI_Citation.title.CharacterString', ''),
+            'IdentificationAbstract': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.abstract.CharacterString', ''),
+            'publicationDate': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.citation.CI_Citation.date.CI_Date.date.Date', ''),
+            'DatasetFormat': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.distributionFormat.MD_Format.name.CharacterString',''),
+            # Topic Category Missing
+            'OnlineLinkToDataset': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.transferOptions.MD_DigitalTransferOptions.onLine.CI_OnlineResource.linkage.CharacterString', ''),
+            'IdentificationKeywords': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.descriptiveKeywords.MD_Keywords.keyword.CharacterString', ''),
+            'DataAccessConstraints': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.resourceConstraints.MD_Constraints.accessLimitations.CharacterString', ''),
+            'DataUseConstraints': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.resourceConstraints.MD_Constraints.useLimitations.CharacterString', ''),
 
-                # Data Quality section
-                'MD_Metadata.dataQualityInfo > DQ_DataQuality.scope > DQ_Scope.level': 'dataQualityScope',
-                'MD_Metadata.lineage > LI_Lineage.statement': 'dataLineageSummary',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.description': 'processStep',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.date': 'processDate',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.individualName': 'processStepContact',
-                'MD_Metadata.lineage > LI_Lineage.processStep > LI_ProcessStep.processor > CI_ResponsibleParty.organisationName': 'processStepContactOrganization',
-                'MD_Metadata.lineage > LI_Lineage.source > LI_Source.title': 'dataSourceTitle',
-                'MD_Metadata.lineage > LI_Lineage.source > LI_Source.description': 'onlineLinkToDataSource',
-                'MD_Metadata.dataQualityInfo > DQ_DataQuality.report > DQ_Element.abstract': 'dataAccuracyReport',
+            'DataQualityScope': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.scope.DQ_Scope.level.CharacterString', ''),
+            'LineageStatement': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.lineage.LI_Lineage.statement.CharacterString', ''),
+            'ProcessStepDescription': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.processStep.LI_ProcessStep.description.CharacterString',''),
+            'ProcessStepDate': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.processStep.LI_ProcessStep.date.Date', ''),
+            'ProcessorName': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.processStep.LI_ProcessStep.processor.CI_ResponsibleParty.individualName.CharacterString',''),
+            'SourceTitle': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.source.LI_Source.title.CharacterString', ''),
+            'ReportAbstract': flattened_data.get('MD_Metadata.dataQualityInfo.DQ_DataQuality.report.DQ_Element.abstract.CharacterString', ''),
 
-                # Spatial Coverage section
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.description': 'descriptionOfGeographicExtent',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.geographicElement > EX_GeographicBoundingBox': 'boundingBoxCoordinates',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.code': 'spatialReferenceSystemCode',
-                'MD_Metadata.identificationInfo > MD_DataIdentification.extent > EX_Extent.referenceSystemInfo > MD_ReferenceSystem.referenceSystemIdentifier > RS_Identifier.version': 'spatialReferenceSystemVersion',
+            'descriptionOfGeographicExtent': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.description.CharacterString', ''),
+            'WestBoundLongitude': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.geographicElement.EX_GeographicBoundingBox.westBoundLongitude.Decimal',''),
+            'EastBoundLongitude': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.geographicElement.EX_GeographicBoundingBox.eastBoundLongitude.Decimal',''),
+            'NorthBoundLatitude': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.geographicElement.EX_GeographicBoundingBox.northBoundLatitude.Decimal',''),
+            'SouthBoundLatitude': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.extent.EX_Extent.geographicElement.EX_GeographicBoundingBox.southBoundLatitude.Decimal',''),
+            'ReferenceSystemCode': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.referenceSystemInfo.MD_ReferenceSystem.referenceSystemIdentifier.RS_Identifier.code.CharacterString',''),
+            'ReferenceSystemVersion': flattened_data.get('MD_Metadata.identificationInfo.MD_DataIdentification.referenceSystemInfo.MD_ReferenceSystem.referenceSystemIdentifier.RS_Identifier.version.CharacterString',''),
 
-                # Metadata Reference section
-                'MD_Metadata.contact > CI_ResponsibleParty.organisationName': 'organizationName',
-                'MD_Metadata.contact > CI_ResponsibleParty.individualName': 'contactPerson',
-                'MD_Metadata.contact > CI_ResponsibleParty.positionName': 'position',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.phone': 'telephone',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.electronicMailAddress': 'email',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.deliveryPoint': 'address',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.city': 'city',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.state': 'stateProvince',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.postalCode': 'zipcode',
-                'MD_Metadata.contact > CI_ResponsibleParty.contactInfo > CI_Contact.address > CI_Address.country': 'country',
-            }
-            # print(list(field_mapping.values()))
-            # Traverse the XML tree to extract elements and their text content
-            for elem in root.iter():
-                # Check if the tag name exists in the field_mapping using the full tag with namespace
-                tag_name = f'{{{namespaces.get("S100FC")}}}{elem.tag.split("}")[-1]}' if elem.tag.startswith(
-                    "{") else elem.tag
-                # print(tag_name)
-                tag_name = tag_name[len('{http://www.isotc211.org/2005/gmd}'):]
-                # Check if the tag_name exists in the field_mapping
-                if tag_name in list(field_mapping.values()):
-                    # Map the XML tag to the corresponding form field
-                    # form_field = field_mapping[tag_name]
-                    for child in elem:
-                        if child.text:
-                            text_content = child.text
-                            continue
+            #Missing Organization Name
+            'IndividualName': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.individualName.CharacterString', ''),
+            'PositionName': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.positionName.CharacterString',''),
+            'ContactPhone': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.contactInfo.CI_Contact.phone.CI_Telephone.CharacterString',''),
+            'FaxNumber': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.faxNumber.CharacterString', ''),
+            'EmailAddress': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.email.CharacterString', ''),
+            'Address1': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.address1.CharacterString', ''),
+            'Address2': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.address2.CharacterString', ''),
+            'Address3': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.address3.CharacterString', ''),
+            'City': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.city.CharacterString', ''),
+            'StateProvince': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.state.CharacterString', ''),
+            'PostalCode': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.zipcode.CharacterString', ''),
+            'Country': flattened_data.get('MD_Metadata.contact.CI_ResponsibleParty.country.CharacterString', '')
+        }
 
-                    # If the element has text content, add it to the dictionary
-                    if text_content:
-                        print(text_content)
-                        extracted_data[tag_name] = text_content
+        return render(request, 'metadata_investigator/home.html', {'data': data_to_send})
 
-                # Debugging: print the extracted data to verify it's being parsed correctly
-            print(extracted_data)  # Or use logging if preferred
-
-            # Pass the extracted data to the display template
-            return render(request, 'metadata_investigator/display_attributes.html', {'data': extracted_data})
-
-        except ET.ParseError:
-            return render(request, 'metadata_investigator/home.html', {'error': 'Invalid XML format.'})
-
-            # If not a POST request or no file is uploaded, render the home page
     return render(request, 'metadata_investigator/home.html')
-
-
 
 

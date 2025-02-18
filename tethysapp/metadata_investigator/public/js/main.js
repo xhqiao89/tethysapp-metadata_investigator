@@ -358,3 +358,22 @@ function downloadMetadata() {
     a.click();
     document.body.removeChild(a);
 }
+
+// Function to filter out unwanted rows based on keys
+//function filterFlattenedData(data) {
+//    // Create a new object to store filtered data
+//    let filteredData = {};
+//
+//    // Loop through each key-value pair in the original data
+//    for (const key in data) {
+//        if (data.hasOwnProperty(key)) {
+//            // Skip the unwanted rows (keys)
+//            if (key !== "MD_Metadata.S100FC" && key !== "MD_Metadata.gco") {
+//                filteredData[key] = data[key];
+//            }
+//        }
+//    }
+//    return filteredData;
+//}
+
+
