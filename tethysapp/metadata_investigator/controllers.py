@@ -100,8 +100,6 @@ namespaces = {
     'gco': 'http://www.isotc211.org/2005/gco',  # Namespace for gco
 }
 
-@controller(name='upload_file', url='metadata-investigator/upload')
-
 def flatten_json(data, parent_key='', sep='.', namespace_remove=['S100FC:', 'gco:']):
     items = {}
     if isinstance(data, dict):
@@ -122,6 +120,7 @@ def remove_xmlns_entries(flattened_data):
     # Use a dictionary comprehension to filter out unwanted keys(First two entries in dictionary)
     return {k: v for k, v in flattened_data.items() if "@xmlns" not in k}
 
+@controller(name='upload_file', url='metadata-investigator/upload')
 def upload_file(request):
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
